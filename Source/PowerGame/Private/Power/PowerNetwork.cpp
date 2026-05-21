@@ -107,6 +107,14 @@ void APowerNetwork::DisconnectWire(AWire* wire) {
 
 void APowerNetwork::SerializeSaveData(FNetworkSaveData* out) {
 
+	out->baseFrequency = baseFrequency;
+	out->baseVoltage = baseVoltage;
+	out->responseStrength = responseStrength;
+
+	out->dead = m_dead;
+	out->frequency = m_frequency;
+	out->voltage = m_voltage;
+
 	for (TObjectPtr<AGenerator> generator : m_generators) {
 
 		PW_ASSERT(generator != nullptr, LogPower, TEXT("Can't serialize an invalid generator on Network '%s'"), *GetNameSafe(this));
@@ -135,6 +143,14 @@ void APowerNetwork::SerializeSaveData(FNetworkSaveData* out) {
 
 }
 void APowerNetwork::DeserializeSaveData(const FNetworkSaveData& data, TMap<FGuid, TObjectPtr<ABuildInstance>>& buildingsMap) {
+
+	baseFrequency = data.baseFrequency;
+	baseVoltage = data.baseVoltage;
+	responseStrength = data.responseStrength;
+
+	m_dead = data.dead;
+	m_frequency = data.frequency;
+	m_voltage = data.voltage;
 
 	for (const FGuid& guid : data.generators) {
 
