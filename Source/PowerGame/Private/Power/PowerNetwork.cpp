@@ -4,6 +4,9 @@
 #include "Building/Instances/Load.h"
 #include "Building/Instances/Wire.h"
 
+#include "Saving/NetworkSaveData.h"
+#include "Saving/WorldSaveSubsystem.h"
+
 DEFINE_LOG_CATEGORY(LogPower);
 
 APowerNetwork::APowerNetwork() {
@@ -102,6 +105,95 @@ void APowerNetwork::DisconnectWire(AWire* wire) {
 
 }
 
+void APowerNetwork::SerializeSaveData(FNetworkSaveData* out) {
+
+	for (TObjectPtr<AGenerator> generator : m_generators) {
+
+		PW_ASSERT(generator != nullptr, LogPower, TEXT("Can't serialize an invalid generator on Network '%s'"), *GetNameSafe(this));
+		out->generators.Add(generator->GetGUID());
+
+	}
+	for (TObjectPtr<ALoad> load : m_loads) {
+
+		PW_ASSERT(load != nullptr, LogPower, TEXT("Can't serialize an invalid load on Network '%s'"), *GetNameSafe(this));
+		out->loads.Add(load->GetGUID());
+
+	}
+	for (TObjectPtr<ABuildInstance> misc : m_miscBuildInstances) {
+
+		PW_ASSERT(misc != nullptr, LogPower, TEXT("Can't serialize an invalid load on Network '%s'"), *GetNameSafe(this));
+		out->misc.Add(misc->GetGUID());
+
+	}
+
+	for (TObjectPtr<AWire> wire : m_connections) {
+
+		PW_ASSERT(wire != nullptr, LogPower, TEXT("Can't serialize an invalid wire on Network '%s'"), *GetNameSafe(this));
+		out->connections.Add(wire->GetGUID());
+
+	}
+
+}
+void APowerNetwork::DeserializeSaveData(const FNetworkSaveData& data, TMap<FGuid, TObjectPtr<ABuildInstance>>& buildingsMap) {
+
+	for (const FGuid& guid : data.generators) {
+
+		PW_ASSERT(buildingsMap.Contains(guid), LogSaveSubsystem, TEXT("Loaded buildings map does not contain guid '%s'"), *guid.ToString());
+
+		AGenerator* generator = Cast<AGenerator>(*buildingsMap.Find(guid));
+		PW_ASSERT(generator != nullptr, LogSaveSubsystem, TEXT("Building with guid '%s' was not serialized.."), *guid.ToString());
+
+		m_generators.Add(generator);
+		generator->SetNetwork(this);
+
+	}
+	for (const FGuid& guid : data.loads) {
+
+		PW_ASSERT(buildingsMap.Contains(guid), LogSaveSubsystem, TEXT("Loaded buildings map does not contain guid '%s'"), *guid.ToString());
+
+		ALoad* load = Cast<ALoad>(*buildingsMap.Find(guid));
+		PW_ASSERT(load != nullptr, LogSaveSubsystem, TEXT("Building with guid '%s' was not serialized.."), *guid.ToString());
+
+		m_loads.Add(load);
+		load->SetNetwork(this);
+
+	}
+	for (const FGuid& guid : data.misc) {
+
+		PW_ASSERT(buildingsMap.Contains(guid), LogSaveSubsystem, TEXT("Loaded buildings map does not contain guid '%s'"), *guid.ToString());
+		
+		ABuildInstance* miscBuildInstance = *buildingsMap.Find(guid);
+		PW_ASSERT(miscBuildInstance != nullptr, LogSaveSubsystem, TEXT("Building with guid '%s' was not serialized."), *guid.ToString());
+
+		m_miscBuildInstances.Add(miscBuildInstance);
+		miscBuildInstance->SetNetwork(this);
+
+	}
+
+	for (const FGuid& guid : data.connections) {
+
+		PW_ASSERT(buildingsMap.Contains(guid), LogSaveSubsystem, TEXT("Loaded buildings map does not contain guid '%s'"), *guid.ToString());
+
+		AWire* wire = Cast<AWire>(*buildingsMap.Find(guid));
+		PW_ASSERT(wire != nullptr, LogSaveSubsystem, TEXT("Building with guid '%s' was not serialized.."), *guid.ToString());
+
+		m_connections.Add(wire);
+
+		ABuildInstance* buildInstanceA = *buildingsMap.Find(wire->m_startGUID);
+		ABuildInstance* buildInstanceB = *buildingsMap.Find(wire->m_endGUID);
+		PW_ASSERT(buildInstanceA != nullptr && buildInstanceB != nullptr, LogSaveSubsystem, TEXT("Invalid start or end GUID on deserialized wire."));
+
+		wire->SetNetwork(this);
+		wire->m_startBuildInstance = buildInstanceA;
+		wire->m_endBuildInstance = buildInstanceB;
+
+		buildInstanceA->ConnectWire(wire);
+		buildInstanceB->ConnectWire(wire);
+
+	}
+
+}
+
 APowerNetwork* APowerNetwork::HandleConnection(ABuildInstance* buildInstanceA, ABuildInstance* buildInstanceB, AWire* wire) {
 
 	PW_ASSERT(buildInstanceA != nullptr && buildInstanceB != nullptr, LogPower, TEXT("Can't handle connection between invalid build instances."));
@@ -166,9 +258,6 @@ APowerNetwork* APowerNetwork::HandleConnection(ABuildInstance* buildInstanceA, A
 		// Case 3: 1 connected, 1 unconnected building, the existing network is used.
 		resultingNetwork = networkA != nullptr ? networkA : networkB;
 
-	buildInstanceA->m_powerNetwork = resultingNetwork;
-	buildInstanceB->m_powerNetwork = resultingNetwork;
-
 	resultingNetwork->AddBuildInstance(buildInstanceA);
 	resultingNetwork->AddBuildInstance(buildInstanceB);
 
@@ -197,6 +286,11 @@ void APowerNetwork::AddBuildInstance(ABuildInstance* buildInstance) {
 
 		m_loads.Add(load);
 		load->SetNetwork(this);
+
+	} else {
+
+		m_miscBuildInstances.Add(buildInstance);
+		buildInstance->SetNetwork(this);
 
 	}
 

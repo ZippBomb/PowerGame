@@ -14,6 +14,8 @@ class AGenerator;
 class ALoad;
 class AWire;
 
+struct FNetworkSaveData;
+
 DECLARE_LOG_CATEGORY_EXTERN(LogPower, Log, All);
 
 UCLASS()
@@ -35,6 +37,9 @@ public:
 	void DisconnectLoad(ALoad* load);
 	UFUNCTION(BlueprintCallable)
 	void DisconnectWire(AWire* wire);
+
+	void SerializeSaveData(FNetworkSaveData* out);
+	void DeserializeSaveData(const FNetworkSaveData& data, TMap<FGuid, TObjectPtr<ABuildInstance>>& buildingsMap);
 
 	UFUNCTION(BlueprintCallable)
 	static APowerNetwork* HandleConnection(ABuildInstance* buildInstanceA, ABuildInstance* buildInstanceB, AWire* wire);
@@ -73,11 +78,13 @@ private:
 	float m_totalDemand = 0.0f;
 
 	UPROPERTY(VisibleAnywhere)
-	TSet<TObjectPtr<AWire>> m_connections;
-	UPROPERTY(VisibleAnywhere)
 	TSet<TObjectPtr<AGenerator>> m_generators;
 	UPROPERTY(VisibleAnywhere)
 	TSet<TObjectPtr<ALoad>> m_loads;
+	UPROPERTY(VisibleAnywhere)
+	TSet<TObjectPtr<ABuildInstance>> m_miscBuildInstances;
+	UPROPERTY(VisibleAnywhere)
+	TSet<TObjectPtr<AWire>> m_connections;
 
 	virtual void Tick(float deltaTime) override;
 

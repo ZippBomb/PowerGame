@@ -29,8 +29,6 @@ class POWERGAME_API AWire : public ASplineBuildInstance {
 	friend APowerNetwork;
 	
 public:
-	virtual void SetStartAndEnd(const FVector& startLocation, const FVector& endLocation) override;
-
 	UFUNCTION(BlueprintCallable)
 	void Connect(ABuildInstance* startBuildInstance, ABuildInstance* endBuildInstance);
 
@@ -41,6 +39,10 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<ABuildInstance> m_startBuildInstance = nullptr;
 	UPROPERTY(VisibleAnywhere)
+	FGuid m_startGUID;
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<ABuildInstance> m_endBuildInstance = nullptr;
+	UPROPERTY(VisibleAnywhere)
+	FGuid m_endGUID;
 
 };

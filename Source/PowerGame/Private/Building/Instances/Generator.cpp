@@ -17,10 +17,10 @@ void AGenerator::EndPlay(const EEndPlayReason::Type reason) {
 
 	Super::EndPlay(reason);
 
-	if (m_network == nullptr) return;
+	if (m_powerNetwork == nullptr) return;
 
-	m_network->DisconnectGenerator(this);
-	m_network = nullptr;
+	m_powerNetwork->DisconnectGenerator(this);
+	m_powerNetwork = nullptr;
 
 }
 

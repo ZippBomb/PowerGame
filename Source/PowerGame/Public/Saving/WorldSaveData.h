@@ -2,9 +2,12 @@
 
 #include <CoreMinimal.h>
 #include <GameFramework/SaveGame.h>
-#include <InstancedStruct.h>
 
 #include "Core/Core.h"
+
+#include "Saving/NetworkSaveData.h"
+
+#include <InstancedStruct.h>
 
 #include "WorldSaveData.generated.h"
 
@@ -34,5 +37,10 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "Buildings")
 	TArray<FInstancedStruct> buildings;
+
+	// Power network data
+
+	UPROPERTY(VisibleAnywhere, Category = "Network data")
+	TArray<FNetworkSaveData> networks;
 
 };

@@ -4,16 +4,13 @@
 
 #include "Saving/WorldSaveSubsystem.h"
 
-void AWire::SetStartAndEnd(const FVector& startLocation, const FVector& endLocation) {
-
-	Super::SetStartAndEnd(startLocation, endLocation);
-
-}
-
 void AWire::Connect(ABuildInstance* startBuildInstance, ABuildInstance* endBuildInstance) {
 
 	m_startBuildInstance = startBuildInstance;
+	m_startGUID = startBuildInstance->GetGUID();
+
 	m_endBuildInstance = endBuildInstance;
+	m_endGUID = endBuildInstance->GetGUID();
 
 	m_powerNetwork = APowerNetwork::HandleConnection(startBuildInstance, endBuildInstance, this);
 
@@ -31,8 +28,8 @@ void AWire::SerializeSaveData(FInstancedStruct* out) {
 
 	FWireSaveData& saveData = out->GetMutable<FWireSaveData>();
 
-	saveData.startGUID = m_startBuildInstance->GetGUID();
-	saveData.endGUID = m_endBuildInstance->GetGUID();
+	saveData.startGUID = m_startGUID;
+	saveData.endGUID = m_endGUID;
 
 }
 
@@ -40,5 +37,10 @@ void AWire::DeserializeSaveData(const FInstancedStruct& data) {
 
 	PW_ASSERT(data.GetScriptStruct()->IsChildOf(FWireSaveData::StaticStruct()), LogSaveSubsystem, TEXT("Saved FInstancedStruct is not of type FWireSaveData."));
 	Super::DeserializeSaveData(data);
+
+	const FWireSaveData& saveData = data.Get<FWireSaveData>();
+
+	m_startGUID = saveData.startGUID;
+	m_endGUID = saveData.endGUID;
 
 }

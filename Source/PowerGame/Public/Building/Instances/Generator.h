@@ -37,9 +37,6 @@ public:
 	inline float GetMaxOutput() const { return maxOutput; }
 	UFUNCTION(BlueprintCallable)
 	inline float GetCurrentOutput() const { return m_currentOutput; }
-
-	UFUNCTION(BlueprintCallable)
-	inline void SetNetwork(APowerNetwork* network) { m_network = network; }
 	
 protected:
 	virtual void BeginPlay() override;
@@ -53,8 +50,5 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = "Properties")
 	float m_currentOutput = 100.0f;
-
-	UPROPERTY(VisibleAnywhere, Category = "Power network")
-	TObjectPtr<APowerNetwork> m_network  = nullptr;
 
 };

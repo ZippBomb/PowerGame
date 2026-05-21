@@ -8,10 +8,10 @@ void ALoad::EndPlay(const EEndPlayReason::Type reason) {
 
 	Super::EndPlay(reason);
 
-	if (m_network == nullptr) return;
+	if (m_powerNetwork == nullptr) return;
 
-	m_network->DisconnectLoad(this);
-	m_network = nullptr;
+	m_powerNetwork->DisconnectLoad(this);
+	m_powerNetwork = nullptr;
 
 }
 
@@ -26,7 +26,7 @@ void ALoad::SerializeSaveData(FInstancedStruct* out) {
 	PW_ASSERT(!out->IsValid(), LogSaveSubsystem, TEXT("FInstancedStruct should be initialized by the most derived class. '%s'"), *GetNameSafe(this));
 	out->InitializeAs<FLoadSaveData>();
 
-	SerializeSaveData(out);
+	Super::SerializeSaveData(out);
 
 	FLoadSaveData& saveData = out->GetMutable<FLoadSaveData>();
 

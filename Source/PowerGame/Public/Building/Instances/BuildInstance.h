@@ -58,9 +58,16 @@ public:
 	UFUNCTION(BlueprintCallable)
 	inline APowerNetwork* GetNetwork() const { return m_powerNetwork; }
 
+	// Setters
+
+	inline void SetNetwork(APowerNetwork* network) { m_powerNetwork = network; }
+
 protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UStaticMeshComponent> mesh = nullptr;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<APowerNetwork> m_powerNetwork = nullptr;
 
 	virtual void BeginPlay() override;
 
@@ -70,8 +77,6 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	FGuid m_guid;
 	
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<APowerNetwork> m_powerNetwork = nullptr;
 	UPROPERTY(VisibleAnywhere)
 	TArray<TObjectPtr<AWire>> m_connectedWires;
 	
