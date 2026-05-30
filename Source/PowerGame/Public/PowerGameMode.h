@@ -6,6 +6,8 @@
 
 #include "Core/Core.h"
 
+#include "World/WorldGenerationSubsystem.h"
+
 #include "PowerGameMode.generated.h"
 
 DECLARE_LOG_CATEGORY_EXTERN(LogPowerGame, Log, All)
@@ -20,5 +22,8 @@ public:
 
 private:
 	virtual void BeginPlay() override;
+
+	UPROPERTY(EditDefaultsOnly, Category = "World generation")
+	FWorldGenerationSettings worldGenerationSettings;
 
 };

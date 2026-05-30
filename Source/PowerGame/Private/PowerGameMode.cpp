@@ -8,6 +8,11 @@ void APowerGameMode::BeginPlay() {
 
 	Super::BeginPlay();
 
+	UWorldGenerationSubsystem* worldSubsystem = GetWorld()->GetSubsystem<UWorldGenerationSubsystem>();
+	PW_ASSERT(worldSubsystem != nullptr, LogPowerGame, TEXT("Could not get UWorldGenerationSubsystem from World."));
+
+	worldSubsystem->GenerateWorld(worldGenerationSettings);
+
 	UPowerGameInstance* gameInstance = Cast<UPowerGameInstance>(GetGameInstance());
 	PW_ASSERT(gameInstance != nullptr, LogPowerGame, TEXT("Could not get UPowerGameInstance."));
 
