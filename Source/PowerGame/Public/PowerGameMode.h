@@ -2,8 +2,13 @@
 
 #include <CoreMinimal.h>
 #include <GameFramework/GameModeBase.h>
+#include <Logging/LogMacros.h>
+
+#include "Core/Core.h"
 
 #include "PowerGameMode.generated.h"
+
+DECLARE_LOG_CATEGORY_EXTERN(LogPowerGame, Log, All)
 
 UCLASS()
 class POWERGAME_API APowerGameMode : public AGameModeBase {
@@ -12,5 +17,8 @@ class POWERGAME_API APowerGameMode : public AGameModeBase {
 
 public:
 	APowerGameMode() : Super() {}
+
+private:
+	virtual void BeginPlay() override;
 
 };

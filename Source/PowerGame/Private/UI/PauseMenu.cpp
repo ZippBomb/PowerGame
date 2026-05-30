@@ -11,6 +11,8 @@
 #include <EnhancedInputComponent.h>
 #include <EnhancedInputSubsystems.h>
 
+#include <Kismet/GameplayStatics.h>
+
 void UPauseMenu::InitializeUI(AMainPlayerController* controller) {
 
 	PW_ASSERT(controller != nullptr, LogUI, TEXT("Can't initialize PauseMenu UI with invalid controller."));
@@ -34,11 +36,8 @@ void UPauseMenu::NativeConstruct() {
 	resumeButton->OnClicked.AddDynamic(this, &UPauseMenu::Resume);
 	quitButton->OnClicked.AddDynamic(this, &UPauseMenu::Quit);
 
-	UWorldSaveSubsystem* saveSubsystem = GetGameInstance()->GetSubsystem<UWorldSaveSubsystem>();
-	PW_ASSERT(saveSubsystem != nullptr, LogUI, TEXT("Could not get UWorldSaveSubsystem from game instance."));
-
-	saveButton->OnClicked.AddDynamic(saveSubsystem, &UWorldSaveSubsystem::SaveWorld);
-	loadButton->OnClicked.AddDynamic(saveSubsystem, &UWorldSaveSubsystem::LoadWorld);
+	saveButton->OnClicked.AddDynamic(this, &UPauseMenu::Save);
+	loadButton->OnClicked.AddDynamic(this, &UPauseMenu::Load);
 
 }
 
@@ -82,5 +81,27 @@ void UPauseMenu::Resume() {
 void UPauseMenu::Quit() {
 
 	FGenericPlatformMisc::RequestExit(false);
+
+}
+
+void UPauseMenu::Save() {
+
+	UWorldSaveSubsystem* saveSubsystem = GetGameInstance()->GetSubsystem<UWorldSaveSubsystem>();
+	PW_ASSERT(saveSubsystem != nullptr, LogUI, TEXT("Could not get UWorldSaveSubsystem from game instance."));
+
+	saveSubsystem->SaveWorld("SaveSlot1");
+
+}
+void UPauseMenu::Load() {
+
+	UPowerGameInstance* gameInstance = Cast<UPowerGameInstance>(GetGameInstance());
+	PW_ASSERT(gameInstance != nullptr, LogUI, TEXT("Could not get UPowerGameInstance."));
+
+	gameInstance->pendingSaveSlot = "SaveSlot1";
+	gameInstance->pendingSaveLoad = true;
+
+	UGameplayStatics::OpenLevel(GetWorld(), FName(*UGameplayStatics::GetCurrentLevelName(this)));
+
+	Close();
 
 }

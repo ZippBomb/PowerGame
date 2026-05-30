@@ -27,7 +27,7 @@ void UWorldSaveSubsystem::Deinitialize() {
 
 }
 
-void UWorldSaveSubsystem::SaveWorld() {
+void UWorldSaveSubsystem::SaveWorld(FString slot) {
 
 	// Setup the save data object and delegate
 
@@ -46,7 +46,7 @@ void UWorldSaveSubsystem::SaveWorld() {
 
 	// Save the data to an actual save slot
 
-	UGameplayStatics::AsyncSaveGameToSlot(saveData, "SaveSlot1", 0, saveDelegate);
+	UGameplayStatics::AsyncSaveGameToSlot(saveData, slot, 0, saveDelegate);
 
 }
 void UWorldSaveSubsystem::SavingFinished(const FString& slotName, int32 userIndex, bool success) {
@@ -91,12 +91,12 @@ void UWorldSaveSubsystem::SavePowerNetworks(UWorldSaveData* saveData) {
 
 }
 
-void UWorldSaveSubsystem::LoadWorld() {
+void UWorldSaveSubsystem::LoadWorld(FString slot) {
 
 	FAsyncLoadGameFromSlotDelegate loadDelegate;
 	loadDelegate.BindUObject(this, &UWorldSaveSubsystem::LoadingFinished);
 
-	UGameplayStatics::AsyncLoadGameFromSlot("SaveSlot1", 0, loadDelegate);
+	UGameplayStatics::AsyncLoadGameFromSlot(slot, 0, loadDelegate);
 
 }
 void UWorldSaveSubsystem::LoadingFinished(const FString& slotName, const int32 userIndex, USaveGame* loadedSaveData) {

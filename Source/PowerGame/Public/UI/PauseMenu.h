@@ -50,6 +50,11 @@ protected:
 	UFUNCTION()
 	void Quit();
 
+	UFUNCTION()
+	void Save();
+	UFUNCTION()
+	void Load();
+
 private:
 	UPROPERTY()
 	TObjectPtr<AMainPlayerController> m_controller = nullptr;

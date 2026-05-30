@@ -24,9 +24,9 @@ public:
 	virtual void Deinitialize() override;
 
 	UFUNCTION()
-	void SaveWorld();
+	void SaveWorld(FString slot);
 	UFUNCTION()
-	void LoadWorld();
+	void LoadWorld(FString slot);
 
 private:
 	UFUNCTION()
