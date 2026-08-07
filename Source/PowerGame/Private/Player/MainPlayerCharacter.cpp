@@ -1,12 +1,14 @@
 #include "Player/MainPlayerCharacter.h"
 
+#include "Interactible.h"
+
+#include "Inventory/InventoryComponent.h"
+
 #include "Building/ConstructionModeManager.h"
 
 #include "Building/Instances/BuildInstance.h"
 
 #include "UI/PauseMenu.h"
-
-#include "UI/Power/NetworkVisualizer.h"
 
 #include "Saving/WorldSaveData.h"
 
@@ -44,6 +46,10 @@ AMainPlayerCharacter::AMainPlayerCharacter() {
 	armMesh->bCastDynamicShadow = false;
 	armMesh->CastShadow = false;
 
+	// Inventory setup
+
+	inventory = CreateDefaultSubobject<UInventoryComponent>(TEXT("Inventory"));
+
 	// Build mode setup
 
 	constructionModeManager = CreateDefaultSubobject<UConstructionModeManager>(TEXT("BuildModeManager"));
@@ -76,7 +82,7 @@ void AMainPlayerCharacter::Tick(float deltaTime) {
 
 	// Get the interactible
 
-	TObjectPtr<ABuildInstance> target = Cast<ABuildInstance>(hit.GetActor());
+	TObjectPtr<AInteractible> target = Cast<AInteractible>(hit.GetActor());
 	if (target != nullptr)
 		targetInteractible = target;
 	else
@@ -111,9 +117,9 @@ void AMainPlayerCharacter::OpenPauseMenu(const FInputActionValue& value) {
 
 void AMainPlayerCharacter::Interact(const FInputActionValue& value) {
 
-	if (targetInteractible == nullptr) return;
+	if (targetInteractible == nullptr || !targetInteractible->IsInteractible()) return;
 
-	m_networkVisualizer->Open(targetInteractible->GetNetwork());
+	targetInteractible->Interact(this);
 
 }
 
@@ -136,6 +142,8 @@ void AMainPlayerCharacter::SetupPlayerInputComponent(UInputComponent* playerInpu
 	// Interactions
 
 	inputComponent->BindAction(interactAction, ETriggerEvent::Triggered, this, &AMainPlayerCharacter::Interact);
+
+	// Inventory
 
 	// Pause menu
 

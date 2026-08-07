@@ -2,11 +2,18 @@
 #include "Building/Instances/Wire.h"
 
 #include "Building/Build.h"
+#include "Building/ConstructionModeManager.h"
+
+#include "Player/MainPlayerCharacter.h"
 
 #include "Power/PowerNetwork.h"
 
 #include "Saving/WorldSaveSubsystem.h"
 #include "Saving/BuildingSaveData.h"
+
+#include "UI/Power/NetworkVisualizer.h"
+
+#include <Kismet/GameplayStatics.h>
 
 ABuildInstance::ABuildInstance() {
 
@@ -50,6 +57,9 @@ void ABuildInstance::Deconstruct() {
 
 	}
 
+	if (m_powerNetwork)
+		m_powerNetwork->DisconnectBuilding(this);
+
 }
 
 void ABuildInstance::SerializeSaveData(FInstancedStruct* out) {
@@ -71,6 +81,13 @@ void ABuildInstance::DeserializeSaveData(const FInstancedStruct& data) {
 
 	const FBuildingSaveData& saveData = data.Get<FBuildingSaveData>();
 	SetBuild(saveData.build, saveData.guid);
+
+}
+
+void ABuildInstance::Interact(AMainPlayerCharacter* character) {
+
+	PW_ASSERT(character != nullptr, LogBuilding, TEXT("ABuildInstance::Interact() received a nullptr character."));
+	character->GetNetworkVisualizer()->Open(GetNetwork());
 
 }
 

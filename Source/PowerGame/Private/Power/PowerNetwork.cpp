@@ -104,6 +104,22 @@ void APowerNetwork::DisconnectWire(AWire* wire) {
 	m_connections.Remove(wire);
 
 }
+void APowerNetwork::DisconnectBuilding(ABuildInstance* building) {
+
+	if (AGenerator* generator = Cast<AGenerator>(building))
+		DisconnectGenerator(generator);
+	else if (ALoad* load = Cast<ALoad>(building))
+		DisconnectLoad(load);
+	else if (AWire* wire = Cast<AWire>(building))
+		DisconnectWire(wire);
+	else {
+
+		PW_ASSERT(m_miscBuildInstances.Contains(building), LogPower, TEXT("Can't disconnect misc building ('%s') that isn't connect to network: '%s'"), *GetNameSafe(building), *GetNameSafe(this));
+		m_miscBuildInstances.Remove(building);
+
+	}
+
+}
 
 void APowerNetwork::SerializeSaveData(FNetworkSaveData* out) {
 

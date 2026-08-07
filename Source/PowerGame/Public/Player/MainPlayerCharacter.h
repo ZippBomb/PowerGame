@@ -8,7 +8,11 @@
 
 #include "MainPlayerCharacter.generated.h"
 
+class UInventoryComponent;
+
 class UConstructionModeManager;
+
+class AInteractible;
 
 class ABuildInstance;
 
@@ -54,8 +58,15 @@ public:
 	inline UCameraComponent* GetCamera() const { return camera; }
 	UFUNCTION(BlueprintCallable)
 	inline USkeletalMeshComponent* GetArmMesh() const { return armMesh; }
+
+	UFUNCTION(BlueprintCallable)
+	inline UInventoryComponent* GetInventoryComponent() const { return inventory; }
+
 	UFUNCTION(BlueprintCallable)
 	inline UConstructionModeManager* GetConstructionModeManager() const { return constructionModeManager; }
+
+	UFUNCTION(BlueprintCallable)
+	inline UNetworkVisualizer* GetNetworkVisualizer() const { return m_networkVisualizer; }
 
 protected:
 	// Components
@@ -65,7 +76,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<USkeletalMeshComponent> armMesh = nullptr;
 
-	UPROPERTY(VisibleAnywhere, Category = "Component")
+	UPROPERTY(VisibleAnywhere, Category = "Components")
+	TObjectPtr<UInventoryComponent> inventory = nullptr;
+
+	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<UConstructionModeManager> constructionModeManager = nullptr;
 
 	//
@@ -75,7 +89,7 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Interactions")
 	float interactionRange = 50.0f;
 	UPROPERTY(VisibleAnywhere, Category = "Interactions")
-	TObjectPtr<ABuildInstance> targetInteractible = nullptr;
+	TObjectPtr<AInteractible> targetInteractible = nullptr;
 
 	//
 	// Input
@@ -94,6 +108,11 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Input|Interactions")
 	TObjectPtr<UInputAction> interactAction = nullptr;
+
+	// Inventory
+
+	UPROPERTY(EditAnywhere, Category = "Input|Inventory")
+	TObjectPtr<UInputAction> openInventoryAction = nullptr;
 
 	// Mode switching
 

@@ -37,6 +37,8 @@ public:
 	void DisconnectLoad(ALoad* load);
 	UFUNCTION(BlueprintCallable)
 	void DisconnectWire(AWire* wire);
+	UFUNCTION(BlueprintCallable)
+	void DisconnectBuilding(ABuildInstance* building);
 
 	void SerializeSaveData(FNetworkSaveData* out);
 	void DeserializeSaveData(const FNetworkSaveData& data, TMap<FGuid, TObjectPtr<ABuildInstance>>& buildingsMap);

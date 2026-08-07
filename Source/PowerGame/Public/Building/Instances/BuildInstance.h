@@ -1,7 +1,7 @@
 #pragma once
 
 #include <CoreMinimal.h>
-#include <GameFramework/Actor.h>
+#include "Interactible.h"
 
 #include "Core/Core.h"
 
@@ -17,7 +17,7 @@ class APowerNetwork;
 struct FInstancedStruct;
 
 UCLASS(Abstract)
-class POWERGAME_API ABuildInstance : public AActor {
+class POWERGAME_API ABuildInstance : public AInteractible {
 
 	GENERATED_BODY()
 
@@ -40,6 +40,10 @@ public:
 
 	virtual void SerializeSaveData(FInstancedStruct* out);
 	virtual void DeserializeSaveData(const FInstancedStruct& data);
+
+	// Interacting
+
+	virtual void Interact(AMainPlayerCharacter* character) override;
 
 	// Highlight material
 
