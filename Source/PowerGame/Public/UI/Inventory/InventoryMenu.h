@@ -29,6 +29,7 @@ public:
 	void Close();
 
 	UInventorySlot* AddSlot(const FItemSlot& data);
+	void RemoveSlot(uint32 index);
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))

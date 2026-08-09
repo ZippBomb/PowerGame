@@ -56,7 +56,8 @@ void UInventoryComponent::AddItem(UItemData* item, uint32 quantity) {
 
 		for (FItemSlot& slot : slots) {
 
-			if (slot.item != item) continue;
+			if (slot.item != item || slot.quantity == item->stackSize) continue;
+			if (remaining == 0) return;
 
 			if (slot.quantity + remaining > item->stackSize) {
 
@@ -108,6 +109,26 @@ bool UInventoryComponent::RemoveItem(UItemData* item, uint32 quantity) {
 		storedItems[item] -= quantity;
 	else
 		storedItems.Remove(item);
+
+	uint32 remaining = quantity;
+	for (int32 i = slots.Num() - 1; i > -1 && quantity > 0; i--) {
+
+		FItemSlot& slot = slots[i];
+		if (slot.quantity <= remaining) {
+
+			remaining -= slot.quantity;
+
+			m_ui->RemoveSlot(i);
+			slots.RemoveAt(i);
+
+		} else {
+
+			slot.quantity -= remaining;
+			slot.uiSlot->UpdateQuantity(slot.quantity);
+
+		}
+
+	}
 
 	return true;
 
