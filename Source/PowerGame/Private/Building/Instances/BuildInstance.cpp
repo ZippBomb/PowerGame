@@ -11,6 +11,8 @@
 #include "Saving/WorldSaveSubsystem.h"
 #include "Saving/BuildingSaveData.h"
 
+#include "UI/MainLayout.h"
+
 #include "UI/Power/NetworkVisualizer.h"
 
 #include <Kismet/GameplayStatics.h>
@@ -87,7 +89,7 @@ void ABuildInstance::DeserializeSaveData(const FInstancedStruct& data) {
 void ABuildInstance::Interact(AMainPlayerCharacter* character) {
 
 	PW_ASSERT(character != nullptr, LogBuilding, TEXT("ABuildInstance::Interact() received a nullptr character."));
-	character->GetNetworkVisualizer()->Open(GetNetwork());
+	character->GetUI()->GetNetworkVisualizer()->Open(GetNetwork());
 
 }
 

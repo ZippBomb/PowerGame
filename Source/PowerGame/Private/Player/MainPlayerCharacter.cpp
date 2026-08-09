@@ -8,6 +8,7 @@
 
 #include "Building/Instances/BuildInstance.h"
 
+#include "UI/MainLayout.h"
 #include "UI/PauseMenu.h"
 
 #include "Saving/WorldSaveData.h"
@@ -109,9 +110,7 @@ void AMainPlayerCharacter::Look(const FInputActionValue& value) {
 
 void AMainPlayerCharacter::OpenPauseMenu(const FInputActionValue& value) {
 
-	PW_ASSERT(m_pauseMenu != nullptr, LogCharacter, TEXT("AMainPlayerCharacter did not had a PauseMenu ui bound."));
-
-	m_pauseMenu->Open();
+	m_ui->GetPauseMenu()->Open();
 
 }
 
@@ -144,6 +143,8 @@ void AMainPlayerCharacter::SetupPlayerInputComponent(UInputComponent* playerInpu
 	inputComponent->BindAction(interactAction, ETriggerEvent::Triggered, this, &AMainPlayerCharacter::Interact);
 
 	// Inventory
+
+	inputComponent->BindAction(openInventoryAction, ETriggerEvent::Triggered, inventory.Get(), &UInventoryComponent::Open);
 
 	// Pause menu
 

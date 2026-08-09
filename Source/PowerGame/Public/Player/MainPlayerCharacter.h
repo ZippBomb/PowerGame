@@ -18,9 +18,7 @@ class ABuildInstance;
 
 // UI
 
-class UPauseMenu;
-
-class UNetworkVisualizer;
+class UMainLayout;
 
 // UE Components
 
@@ -47,10 +45,9 @@ public:
 	virtual void Tick(float deltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	inline void BindUI(UPauseMenu* pauseMenu, UNetworkVisualizer* visualizer) {
+	inline void BindUI(UMainLayout* ui) {
 		
-		m_pauseMenu = pauseMenu;
-		m_networkVisualizer = visualizer;
+		m_ui = ui;
 	
 	}
 
@@ -66,7 +63,7 @@ public:
 	inline UConstructionModeManager* GetConstructionModeManager() const { return constructionModeManager; }
 
 	UFUNCTION(BlueprintCallable)
-	inline UNetworkVisualizer* GetNetworkVisualizer() const { return m_networkVisualizer; }
+	inline UMainLayout* GetUI() const { return m_ui; }
 
 protected:
 	// Components
@@ -128,9 +125,7 @@ protected:
 
 private:
 	UPROPERTY()
-	TObjectPtr<UPauseMenu> m_pauseMenu = nullptr;
-	UPROPERTY()
-	TObjectPtr<UNetworkVisualizer> m_networkVisualizer = nullptr;
+	TObjectPtr<UMainLayout> m_ui = nullptr;
 
 	void Move(const FInputActionValue& value);
 	void Look(const FInputActionValue& value);

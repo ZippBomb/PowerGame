@@ -12,5 +12,10 @@ class POWERGAME_API UItemData : public UPrimaryDataAsset {
 public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	FText displayName;
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UTexture2D> icon = nullptr;
+
+	UPROPERTY(EditDefaultsOnly)
+	uint32 stackSize = 100;
 
 };

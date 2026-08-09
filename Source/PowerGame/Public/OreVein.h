@@ -7,6 +7,8 @@
 
 class UStaticMeshComponent;
 
+class UItemData;
+
 UCLASS()
 class POWERGAME_API AOreVein : public AInteractible {
 
@@ -24,7 +26,7 @@ private:
 	TObjectPtr<UStaticMeshComponent> mesh = nullptr;
 
 	UPROPERTY(EditAnywhere, meta = (AllowedPrimaryAssetType = "ItemData"))
-	FPrimaryAssetId ore;
+	TObjectPtr<UItemData> ore;
 	UPROPERTY(EditAnywhere)
 	uint32 yield = 1;
 

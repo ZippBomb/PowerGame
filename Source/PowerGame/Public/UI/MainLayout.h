@@ -8,6 +8,7 @@
 #include "MainLayout.generated.h"
 
 class UPauseMenu;
+class UInventoryMenu;
 class UBuildMenu;
 
 class UNetworkVisualizer;
@@ -21,11 +22,20 @@ public:
 	virtual void NativeConstruct() override;
 
 	UFUNCTION(BlueprintCallable)
+	inline UPauseMenu* GetPauseMenu() const { return pauseMenu; }
+	UFUNCTION(BlueprintCallable)
+	inline UInventoryMenu* GetInventoryMenu() const { return inventoryMenu; }
+	UFUNCTION(BlueprintCallable)
+	inline UBuildMenu* GetBuildMenu() const { return buildMenu; }
+
+	UFUNCTION(BlueprintCallable)
 	inline UNetworkVisualizer* GetNetworkVisualizer() const { return networkVisualizer; }
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
 	TObjectPtr<UPauseMenu> pauseMenu = nullptr;
+	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
+	TObjectPtr<UInventoryMenu> inventoryMenu = nullptr;
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
 	TObjectPtr<UBuildMenu> buildMenu = nullptr;
 

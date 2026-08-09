@@ -2,10 +2,24 @@
 
 #include <CoreMinimal.h>
 
-class POWERGAME_API ItemSlot {
+#include "ItemSlot.generated.h"
+
+class UItemData;
+
+class UInventorySlot;
+
+USTRUCT()
+struct POWERGAME_API FItemSlot {
+
+	GENERATED_BODY()
 
 public:
-	ItemSlot();
-	~ItemSlot();
+	UPROPERTY()
+	TObjectPtr<UItemData> item;
+	UPROPERTY()
+	int32 quantity = 0;
+
+	UPROPERTY()
+	TObjectPtr<UInventorySlot> uiSlot;
 
 };

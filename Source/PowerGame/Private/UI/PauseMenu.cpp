@@ -15,7 +15,7 @@
 
 void UPauseMenu::InitializeUI(AMainPlayerController* controller) {
 
-	PW_ASSERT(controller != nullptr, LogUI, TEXT("Can't initialize PauseMenu UI with invalid controller."));
+	PW_ASSERT(controller != nullptr, LogUI, TEXT("Can't initialize PauseMenu UI with an invalid controller."));
 
 	m_controller = controller;
 	SetOwningPlayer(controller);
