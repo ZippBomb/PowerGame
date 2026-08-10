@@ -11,6 +11,8 @@ class UPauseMenu;
 class UInventoryMenu;
 class UBuildMenu;
 
+class UCoalBoilerUI;
+
 class UNetworkVisualizer;
 
 UCLASS(Abstract)
@@ -31,6 +33,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	inline UNetworkVisualizer* GetNetworkVisualizer() const { return networkVisualizer; }
 
+	UFUNCTION(BlueprintCallable)
+	inline UCoalBoilerUI* GetCoalBoilerUI() const { return coalBoilerUI; }
+
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
 	TObjectPtr<UPauseMenu> pauseMenu = nullptr;
@@ -41,5 +46,8 @@ protected:
 
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
 	TObjectPtr<UNetworkVisualizer> networkVisualizer = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
+	TObjectPtr<UCoalBoilerUI> coalBoilerUI = nullptr;
 
 };

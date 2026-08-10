@@ -8,6 +8,8 @@
 
 #include "UI/Power/NetworkVisualizer.h"
 
+#include "UI/Buildings/Machines/CoalBoilerUI.h"
+
 #include "Player/MainPlayerController.h"
 #include "Player/MainPlayerCharacter.h"
 
@@ -39,5 +41,7 @@ void UMainLayout::NativeConstruct() {
 	buildMenu->InitializeUI(controller);
 
 	networkVisualizer->InitializeUI(controller);
+
+	coalBoilerUI->SetOwningPlayer(controller);
 
 }

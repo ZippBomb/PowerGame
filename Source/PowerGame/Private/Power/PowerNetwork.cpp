@@ -1,8 +1,8 @@
 #include "Power/PowerNetwork.h"
 
-#include "Building/Instances/Generator.h"
-#include "Building/Instances/Load.h"
-#include "Building/Instances/Wire.h"
+#include "Building/Instances/Power/Generator.h"
+#include "Building/Instances/Power/Load.h"
+#include "Building/Instances/Power/Wire.h"
 
 #include "Saving/NetworkSaveData.h"
 #include "Saving/WorldSaveSubsystem.h"

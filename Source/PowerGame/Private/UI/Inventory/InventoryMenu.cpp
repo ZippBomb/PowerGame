@@ -63,7 +63,7 @@ inline UInventorySlot* UInventoryMenu::AddSlot(const FItemSlot& data) {
 	return slot;
 
 }
-void UInventoryMenu::RemoveSlot(uint32 index) {
+void UInventoryMenu::RemoveSlot(int32 index) {
 
 	PW_ASSERT(index < slots.Num(), LogUI, TEXT("Can't remove an invalid slot index."));
 

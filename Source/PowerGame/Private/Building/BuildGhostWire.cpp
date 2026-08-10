@@ -1,11 +1,12 @@
 #include "Building/BuildGhostWire.h"
-#include "Building/Build.h"
+#include "Building/Builds/Build.h"
 
 #include "Building/ConstructionModeManager.h"
 
 #include "Building/Instances/BuildInstance.h"
 #include "Building/Instances/SplineBuildInstance.h"
-#include "Building/Instances/Wire.h"
+
+#include "Building/Instances/Power/Wire.h"
 
 void ABuildGhostWire::SetBuild(UBuild* build) {
 

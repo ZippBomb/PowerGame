@@ -1,7 +1,8 @@
 #include "Building/Instances/BuildInstance.h"
-#include "Building/Instances/Wire.h"
 
-#include "Building/Build.h"
+#include "Building/Instances/Power/Wire.h"
+
+#include "Building/Builds/Build.h"
 #include "Building/ConstructionModeManager.h"
 
 #include "Player/MainPlayerCharacter.h"

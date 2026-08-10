@@ -1,6 +1,6 @@
 #include "Building/ConstructionModeManager.h"
 
-#include "Building/Build.h"
+#include "Building/Builds/Build.h"
 #include "Building/BuildGhost.h"
 
 #include "Building/Instances/BuildInstance.h"

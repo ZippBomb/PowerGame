@@ -1,5 +1,5 @@
 #include "Building/BuildGhost.h"
-#include "Building/Build.h"
+#include "Building/Builds/Build.h"
 
 #include "Building/ConstructionModeManager.h"
 

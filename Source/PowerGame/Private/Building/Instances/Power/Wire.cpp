@@ -1,4 +1,4 @@
-#include "Building/Instances/Wire.h"
+#include "Building/Instances/Power/Wire.h"
 
 #include "Power/PowerNetwork.h"
 

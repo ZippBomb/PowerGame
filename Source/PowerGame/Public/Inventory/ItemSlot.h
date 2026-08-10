@@ -17,7 +17,7 @@ public:
 	UPROPERTY()
 	TObjectPtr<UItemData> item;
 	UPROPERTY()
-	int32 quantity = 0;
+	uint32 quantity = 0;
 
 	UPROPERTY()
 	TObjectPtr<UInventorySlot> uiSlot;
