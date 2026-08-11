@@ -3,6 +3,8 @@
 
 #include "UI/MainHUD.h"
 
+#include "Inventory/ItemSlot.h"
+
 #include "Player/MainPlayerController.h"
 
 #include <Components/WrapBox.h>
@@ -30,5 +32,27 @@ void UInventoryPanel::RemoveSlot(int32 index) {
 	slotContainer->RemoveChild(slot);
 
 	slots.RemoveAt(index);
+
+}
+
+void UInventoryPanel::LoadSlots(const TArray<FItemSlot>& inventorySlots) {
+
+	for (const FItemSlot& slot : inventorySlots) {
+
+		AddSlot(slot);
+
+	}
+
+}
+void UInventoryPanel::ClearSlots() {
+
+	for (UInventorySlot* slot : slots) {
+
+		slot->RemoveFromViewport();
+		slotContainer->RemoveChild(slot);
+
+	}
+
+	slots.Empty();
 
 }

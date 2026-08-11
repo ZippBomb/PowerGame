@@ -10,6 +10,7 @@
 class UItemData;
 
 class UInventoryMenu;
+class UInventoryPanel;
 
 class UInputAction;
 
@@ -28,6 +29,9 @@ public:
 
 	void AddItem(UItemData* item, uint32 quantity = 1);
 	bool RemoveItem(UItemData* item, uint32 quantity = 1);
+
+	UFUNCTION(BlueprintCallable)
+	void DisplayInventory(UInventoryPanel* inventoryPanel);
 
 protected:
 	UPROPERTY(VisibleAnywhere)

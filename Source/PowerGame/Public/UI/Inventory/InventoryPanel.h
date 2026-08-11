@@ -23,6 +23,9 @@ public:
 	UInventorySlot* AddSlot(const FItemSlot& data);
 	void RemoveSlot(int32 index);
 
+	void LoadSlots(const TArray<FItemSlot>& slots);
+	void ClearSlots();
+
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
 	TObjectPtr<UWrapBox> slotContainer = nullptr;

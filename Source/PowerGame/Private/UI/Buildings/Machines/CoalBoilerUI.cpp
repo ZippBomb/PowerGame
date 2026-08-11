@@ -4,6 +4,9 @@
 #include "Building/Instances/Machines/CoalBoilerInstance.h"
 
 #include "Player/MainPlayerController.h"
+#include "Player/MainPlayerCharacter.h"
+
+#include "Inventory/InventoryComponent.h"
 
 #include <EnhancedInputComponent.h>
 #include <EnhancedInputSubsystems.h>
@@ -41,6 +44,13 @@ void UCoalBoilerUI::Open(ACoalBoilerInstance* instance) {
 	m_controller->SetInputMode(FInputModeGameAndUI());
 	m_controller->DisableDefaultIMC();
 	m_controller->AddMappingContext(uiIMC);
+
+	// Load Player inventory
+
+	AMainPlayerCharacter* character = Cast<AMainPlayerCharacter>(m_controller->GetCharacter());
+	PW_ASSERT(character != nullptr, LogUI, TEXT("Could not get AMainPlayerCharacter from AMainPlayerController->GetCharacter()."));
+
+	character->GetInventoryComponent()->DisplayInventory(inventoryPanel);
 
 }
 void UCoalBoilerUI::Close() {

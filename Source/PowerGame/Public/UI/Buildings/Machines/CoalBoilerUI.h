@@ -11,6 +11,8 @@ class AMainPlayerController;
 
 class ACoalBoilerInstance;
 
+class UInventoryPanel;
+
 class UButton;
 class UTextBlock;
 
@@ -33,7 +35,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UpdateUI(float fuel, float steam);
 
+	UFUNCTION(BlueprintCallable)
+	inline UInventoryPanel* GetInventoryPanel() const { return inventoryPanel; }
+
 protected:
+	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
+	TObjectPtr<UInventoryPanel> inventoryPanel = nullptr;
+
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
 	TObjectPtr<UButton> button = nullptr;
 

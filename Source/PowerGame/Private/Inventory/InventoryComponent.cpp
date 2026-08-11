@@ -134,3 +134,10 @@ bool UInventoryComponent::RemoveItem(UItemData* item, uint32 quantity) {
 	return true;
 
 }
+
+void UInventoryComponent::DisplayInventory(UInventoryPanel* inventoryPanel) {
+
+	inventoryPanel->ClearSlots();
+	inventoryPanel->LoadSlots(slots);
+
+}
