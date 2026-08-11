@@ -7,6 +7,7 @@
 #include "UI/MainLayout.h"
 
 #include "UI/Inventory/InventoryMenu.h"
+#include "UI/Inventory/InventoryPanel.h"
 #include "UI/Inventory/InventorySlot.h"
 
 #include <EnhancedInputComponent.h>
@@ -95,7 +96,7 @@ void UInventoryComponent::AddItem(UItemData* item, uint32 quantity) {
 
 		}
 
-		slot.uiSlot = m_ui->AddSlot(slot);
+		slot.uiSlot = m_ui->GetInventoryPanel()->AddSlot(slot);
 		slots.Add(slot);
 
 	}
@@ -118,7 +119,7 @@ bool UInventoryComponent::RemoveItem(UItemData* item, uint32 quantity) {
 
 			remaining -= slot.quantity;
 
-			m_ui->RemoveSlot(i);
+			m_ui->GetInventoryPanel()->RemoveSlot(i);
 			slots.RemoveAt(i);
 
 		} else {

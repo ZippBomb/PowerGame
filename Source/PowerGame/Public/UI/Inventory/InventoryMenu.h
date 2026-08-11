@@ -7,10 +7,7 @@
 
 class AMainPlayerController;
 
-class UInventorySlot;
-struct FItemSlot;
-
-class UWrapBox;
+class UInventoryPanel;
 
 class UInputMappingContext;
 
@@ -28,23 +25,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Close();
 
-	UInventorySlot* AddSlot(const FItemSlot& data);
-	void RemoveSlot(int32 index);
+	UFUNCTION(BlueprintCallable)
+	inline UInventoryPanel* GetInventoryPanel() const { return inventoryPanel; }
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
-	TObjectPtr<UWrapBox> slotContainer = nullptr;
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UInventorySlot> inventorySlotClass = nullptr;
+	TObjectPtr<UInventoryPanel> inventoryPanel = nullptr;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UInputMappingContext> uiIMC = nullptr;
 
 private:
-	UPROPERTY()
-	TArray<TObjectPtr<UInventorySlot>> slots;
-
 	UPROPERTY()
 	TObjectPtr<AMainPlayerController> m_controller = nullptr;
 

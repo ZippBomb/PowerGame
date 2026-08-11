@@ -1,5 +1,5 @@
 #include "UI/Inventory/InventoryMenu.h"
-#include "UI/Inventory/InventorySlot.h"
+#include "UI/Inventory/InventoryPanel.h"
 
 #include "UI/MainHUD.h"
 
@@ -14,8 +14,10 @@ void UInventoryMenu::InitializeUI(AMainPlayerController* controller) {
 	SetOwningPlayer(controller);
 	m_controller = controller;
 
-	SetVisibility(ESlateVisibility::Hidden);
+	inventoryPanel->SetOwningPlayer(controller);
 
+	SetVisibility(ESlateVisibility::Hidden);
+	
 }
 
 void UInventoryMenu::Open() {
@@ -47,31 +49,5 @@ void UInventoryMenu::Close() {
 	m_controller->SetInputMode(FInputModeGameOnly());
 	m_controller->EnableDefaultIMC();
 	m_controller->RemoveMappingContext(uiIMC);
-
-}
-
-inline UInventorySlot* UInventoryMenu::AddSlot(const FItemSlot& data) {
-
-	PW_ASSERT(inventorySlotClass != nullptr, LogUI, TEXT("Inventory slot class must be assigned."));
-
-	UInventorySlot* slot = CreateWidget<UInventorySlot>(GetOwningPlayer(), inventorySlotClass);
-	slot->SetData(data);
-
-	slotContainer->AddChild(slot);
-	slots.Add(slot);
-
-	return slot;
-
-}
-void UInventoryMenu::RemoveSlot(int32 index) {
-
-	PW_ASSERT(index < slots.Num(), LogUI, TEXT("Can't remove an invalid slot index."));
-
-	UInventorySlot* slot = slots[index];
-
-	slot->RemoveFromViewport();
-	slotContainer->RemoveChild(slot);
-
-	slots.RemoveAt(index);
 
 }

@@ -37,7 +37,6 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
 	TObjectPtr<UButton> button = nullptr;
 
-
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
 	TObjectPtr<UTextBlock> coalText = nullptr;
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
