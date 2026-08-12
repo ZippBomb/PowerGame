@@ -7,8 +7,10 @@
 
 class AMainPlayerController;
 
-class UInventorySlot;
+class UInventoryComponent;
 struct FItemSlot;
+
+class UInventorySlot;
 
 class UWrapBox;
 
@@ -20,11 +22,15 @@ class POWERGAME_API UInventoryPanel : public UUserWidgetBase {
 	GENERATED_BODY()
 
 public:
-	UInventorySlot* AddSlot(const FItemSlot& data);
+	UPROPERTY()
+	TObjectPtr<UInventoryComponent> inventory = nullptr;
+
+	UInventorySlot* AddSlot();
 	void RemoveSlot(int32 index);
 
 	void LoadSlots(const TArray<FItemSlot>& slots);
-	void ClearSlots();
+
+	inline UInventorySlot* GetSlot(uint32 index) const { return slots[index]; }
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))

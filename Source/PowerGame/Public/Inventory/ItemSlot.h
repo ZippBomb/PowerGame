@@ -2,10 +2,13 @@
 
 #include <CoreMinimal.h>
 
+#include "Core/Core.h"
+
 #include "ItemSlot.generated.h"
 
 class UItemData;
 
+class UInventoryPanel;
 class UInventorySlot;
 
 USTRUCT()
@@ -20,6 +23,8 @@ public:
 	uint32 quantity = 0;
 
 	UPROPERTY()
-	TObjectPtr<UInventorySlot> uiSlot;
+	uint32 slotIndex = 0;
+
+	UInventorySlot* GetSlot(UInventoryPanel* invPanel) const;
 
 };

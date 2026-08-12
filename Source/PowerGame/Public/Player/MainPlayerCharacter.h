@@ -8,7 +8,7 @@
 
 #include "MainPlayerCharacter.generated.h"
 
-class UInventoryComponent;
+class UPlayerInventoryComponent;
 
 class UConstructionModeManager;
 
@@ -57,7 +57,7 @@ public:
 	inline USkeletalMeshComponent* GetArmMesh() const { return armMesh; }
 
 	UFUNCTION(BlueprintCallable)
-	inline UInventoryComponent* GetInventoryComponent() const { return inventory; }
+	inline UPlayerInventoryComponent* GetInventoryComponent() const { return inventory; }
 
 	UFUNCTION(BlueprintCallable)
 	inline UConstructionModeManager* GetConstructionModeManager() const { return constructionModeManager; }
@@ -74,7 +74,7 @@ protected:
 	TObjectPtr<USkeletalMeshComponent> armMesh = nullptr;
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
-	TObjectPtr<UInventoryComponent> inventory = nullptr;
+	TObjectPtr<UPlayerInventoryComponent> inventory = nullptr;
 
 	UPROPERTY(VisibleAnywhere, Category = "Components")
 	TObjectPtr<UConstructionModeManager> constructionModeManager = nullptr;

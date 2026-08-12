@@ -9,6 +9,7 @@
 struct FItemSlot;
 class UItemData;
 
+class UInventoryPanel;
 class UItemIcon;
 
 class UButton;
@@ -19,15 +20,21 @@ class POWERGAME_API UInventorySlot : public UUserWidgetBase {
 
 	GENERATED_BODY()
 
+	friend class UInventoryPanel;
+
 public:
 	void SetData(const FItemSlot& data);
 
-	void UpdateQuantity(uint32 value);
+	void SetItem(UItemData* item);
+	void SetQuantity(uint32 value);
 
 	void Clear();
 
 	inline UItemData* GetItem() const { return item; }
 	inline uint32 GetQuantity() const { return quantity; }
+
+	inline uint32 GetSlotIndex() const { return slotIndex; }
+	inline UInventoryPanel* GetInventoryPanel() const { return inventoryPanel; }
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
@@ -36,6 +43,11 @@ protected:
 	TObjectPtr<UItemIcon> icon = nullptr;
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
 	TObjectPtr<UTextBlock> quantityText = nullptr;
+
+	UPROPERTY()
+	uint32 slotIndex = 0;
+	UPROPERTY()
+	TObjectPtr<UInventoryPanel> inventoryPanel = nullptr;
 
 	virtual void NativeConstruct() override;
 

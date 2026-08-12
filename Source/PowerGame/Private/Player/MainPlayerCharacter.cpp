@@ -2,7 +2,7 @@
 
 #include "Interactible.h"
 
-#include "Inventory/InventoryComponent.h"
+#include "Inventory/PlayerInventoryComponent.h"
 
 #include "Building/ConstructionModeManager.h"
 
@@ -49,7 +49,7 @@ AMainPlayerCharacter::AMainPlayerCharacter() {
 
 	// Inventory setup
 
-	inventory = CreateDefaultSubobject<UInventoryComponent>(TEXT("Inventory"));
+	inventory = CreateDefaultSubobject<UPlayerInventoryComponent>(TEXT("Inventory"));
 
 	// Build mode setup
 
@@ -144,7 +144,7 @@ void AMainPlayerCharacter::SetupPlayerInputComponent(UInputComponent* playerInpu
 
 	// Inventory
 
-	inputComponent->BindAction(openInventoryAction, ETriggerEvent::Triggered, inventory.Get(), &UInventoryComponent::Open);
+	inputComponent->BindAction(openInventoryAction, ETriggerEvent::Triggered, inventory.Get(), &UPlayerInventoryComponent::Open);
 
 	// Pause menu
 

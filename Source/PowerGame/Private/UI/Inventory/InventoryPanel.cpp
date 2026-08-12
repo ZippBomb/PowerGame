@@ -9,12 +9,13 @@
 
 #include <Components/WrapBox.h>
 
-inline UInventorySlot* UInventoryPanel::AddSlot(const FItemSlot& data) {
+inline UInventorySlot* UInventoryPanel::AddSlot() {
 
 	PW_ASSERT(inventorySlotClass != nullptr, LogUI, TEXT("Inventory slot class must be assigned."));
 
 	UInventorySlot* slot = CreateWidget<UInventorySlot>(GetOwningPlayer(), inventorySlotClass);
-	slot->SetData(data);
+	slot->slotIndex = slots.Num();
+	slot->inventoryPanel = this;
 
 	slotContainer->AddChild(slot);
 	slots.Add(slot);
@@ -35,24 +36,35 @@ void UInventoryPanel::RemoveSlot(int32 index) {
 
 }
 
-void UInventoryPanel::LoadSlots(const TArray<FItemSlot>& inventorySlots) {
+void UInventoryPanel::LoadSlots(const TArray<FItemSlot>& itemSlots) {
 
-	for (const FItemSlot& slot : inventorySlots) {
+	// Creathe slots if necessary.
 
-		AddSlot(slot);
+	if (slots.Num() < itemSlots.Num()) {
 
-	}
+		int32 diff = itemSlots.Num() - slots.Num();
+		for (int32 i = 0; i < diff; i++) {
 
-}
-void UInventoryPanel::ClearSlots() {
+			UInventorySlot* slot = AddSlot();
+			PW_ASSERT(slot->slotIndex == itemSlots[slot->slotIndex].slotIndex, LogUI, TEXT("Non matching slot indexes."));
 
-	for (UInventorySlot* slot : slots) {
-
-		slot->RemoveFromViewport();
-		slotContainer->RemoveChild(slot);
+		}
 
 	}
 
-	slots.Empty();
+	// Match the slots
+
+	for (int32 i = 0; i < itemSlots.Num(); i++) {
+
+		PW_ASSERT(i < slots.Num(), LogUI, TEXT("Invalid inventory slot index."));
+
+		UInventorySlot* invSlot = slots[i];
+		const FItemSlot& itemSlot = itemSlots[i];
+		
+		PW_ASSERT(invSlot != nullptr, LogUI, TEXT("Invalid inventory slot."));
+
+		invSlot->SetData(itemSlot);
+
+	}
 
 }

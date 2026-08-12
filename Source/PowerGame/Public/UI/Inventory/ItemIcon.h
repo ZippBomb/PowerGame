@@ -5,6 +5,8 @@
 
 #include "ItemIcon.generated.h"
 
+class UItemData;
+
 class UInventorySlot;
 
 class UImage;
@@ -16,7 +18,7 @@ class POWERGAME_API UItemIcon : public UUserWidgetBase {
 
 public:
 	UFUNCTION(BlueprintCallable)
-	void SetIcon(UTexture2D* sprite);
+	void SetItem(UItemData* item);
 
 	UFUNCTION(BlueprintCallable)
 	inline void SetSlot(UInventorySlot* inventorySlot) { m_slot = inventorySlot; }

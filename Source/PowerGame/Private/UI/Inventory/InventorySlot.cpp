@@ -1,8 +1,10 @@
 #include "UI/Inventory/InventorySlot.h"
+#include "UI/Inventory/InventoryPanel.h"
 #include "UI/Inventory/ItemIcon.h"
 
 #include "UI/MainHUD.h"
 
+#include "Inventory/InventoryComponent.h"
 #include "Inventory/ItemSlot.h"
 #include "Inventory/ItemData.h"
 
@@ -18,33 +20,45 @@ void UInventorySlot::NativeConstruct() {
 
 	icon->SetSlot(this);
 
+	icon->SetItem(nullptr);
+	quantityText->SetVisibility(ESlateVisibility::Hidden);
+
 }
 
 void UInventorySlot::SetData(const FItemSlot& data) {
 
-	PW_ASSERT(data.item != nullptr, LogUI, TEXT("A UInventorySlot can't have an invalid item."));
-
-	item = data.item;
-	icon->SetIcon(item->icon);
-
-	UpdateQuantity(data.quantity);
-
+	SetItem(data.item);
+	SetQuantity(data.quantity);
 
 }
 
-void UInventorySlot::UpdateQuantity(uint32 value) {
+void UInventorySlot::SetItem(UItemData* value) {
+
+	item = value;
+	icon->SetItem(value);
+
+}
+void UInventorySlot::SetQuantity(uint32 value) {
 
 	quantity = value;
-	quantityText->SetText(FText::FromString(FString::FromInt(value)));
+
+	if (quantity != 0) {
+
+		if (quantityText->GetVisibility() == ESlateVisibility::Hidden)
+			quantityText->SetVisibility(ESlateVisibility::Visible);
+
+		quantityText->SetText(FText::FromString(FString::FromInt(value)));
+
+	}
+	else 
+		quantityText->SetVisibility(ESlateVisibility::Hidden);
 
 }
 
 void UInventorySlot::Clear() {
 
-	item = nullptr;
-
-	icon->SetIcon(nullptr);
-	UpdateQuantity(0);
+	SetItem(nullptr);
+	SetQuantity(0);
 
 }
 
@@ -53,10 +67,52 @@ bool UInventorySlot::NativeOnDrop(const FGeometry& geometry, const FDragDropEven
 	TObjectPtr<UItemDragPayload> payload = Cast<UItemDragPayload>(operation->Payload);
 	if (payload == nullptr) return false;
 
-	item = payload->item;
-	
-	icon->SetIcon(item->icon);
-	UpdateQuantity(payload->quantity);
+	if (item == payload->item) {
+
+		if (quantity + payload->quantity > item->stackSize) {
+
+			uint32 left = payload->quantity - item->stackSize + quantity;
+
+			SetQuantity(item->stackSize);
+
+			if (inventoryPanel != nullptr && inventoryPanel->inventory != nullptr)
+				inventoryPanel->inventory->SetAtSlot(slotIndex, item, quantity);
+
+			UInventorySlot* other = payload->slot;
+			PW_ASSERT(other != nullptr, LogUI, TEXT("UItemDragPayload::slot is invalid."));
+
+			other->SetItem(payload->item);
+			other->SetQuantity(left);
+
+			if (other->inventoryPanel == nullptr) return true;
+			if (other->inventoryPanel->inventory == nullptr) return true;
+
+			other->inventoryPanel->inventory->SetAtSlot(other->slotIndex, item, left);
+
+			return true;
+
+		} else {
+
+			SetQuantity(quantity + payload->quantity);
+
+			if (inventoryPanel == nullptr) return true;
+			if (inventoryPanel->inventory == nullptr) return true;
+
+			inventoryPanel->inventory->SetAtSlot(slotIndex, item, quantity);
+
+			return true;
+
+		}
+
+	} else if (item != nullptr) return false;
+
+	SetItem(payload->item);
+	SetQuantity(payload->quantity);
+
+	if (inventoryPanel == nullptr) return true;
+	if (inventoryPanel->inventory == nullptr) return true;
+
+	inventoryPanel->inventory->SetAtSlot(slotIndex, item, quantity);
 
 	return true;
 
