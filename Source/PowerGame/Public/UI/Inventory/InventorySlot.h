@@ -23,6 +23,11 @@ public:
 	void SetData(const FItemSlot& data);
 
 	void UpdateQuantity(uint32 value);
+
+	void Clear();
+
+	inline UItemData* GetItem() const { return item; }
+	inline uint32 GetQuantity() const { return quantity; }
 	
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
@@ -34,10 +39,25 @@ protected:
 
 	virtual void NativeConstruct() override;
 
+	virtual bool NativeOnDrop(const FGeometry& geometry, const FDragDropEvent& event, UDragDropOperation* operation) override;
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UItemData> item;
 	UPROPERTY(VisibleAnywhere)
 	uint32 quantity = 0;
+
+};
+
+UCLASS()
+class POWERGAME_API UItemDragPayload : public UObject {
+
+	GENERATED_BODY()
+
+public:
+	TObjectPtr<UItemData> item = nullptr;
+	uint32 quantity = 0;
+
+	TObjectPtr<UInventorySlot> slot = nullptr;
 
 };
