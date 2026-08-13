@@ -20,7 +20,8 @@ class POWERGAME_API UInventorySlot : public UUserWidgetBase {
 
 	GENERATED_BODY()
 
-	friend class UInventoryPanel;
+	friend UInventoryPanel;
+	friend UItemIcon;
 
 public:
 	void SetData(const FItemSlot& data);
@@ -56,9 +57,15 @@ protected:
 
 	virtual void NativeConstruct() override;
 
-	virtual bool NativeOnDrop(const FGeometry& geometry, const FDragDropEvent& event, UDragDropOperation* operation) override;
+	// Drag
+
+	virtual void OnDragStarted(UItemDragPayload* payload) { }
+	virtual void OnDragCancelled(UItemDragPayload* payload);
+
+	// Drop
 
 	virtual bool CanAcceptDrop(UItemData* droppedItem) const { return true; }
+	virtual bool NativeOnDrop(const FGeometry& geometry, const FDragDropEvent& event, UDragDropOperation* operation) override;
 
 };
 

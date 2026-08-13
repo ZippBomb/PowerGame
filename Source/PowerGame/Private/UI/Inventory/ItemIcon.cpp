@@ -57,6 +57,7 @@ void UItemIcon::NativeOnDragDetected(const FGeometry& geometry, const FPointerEv
 	outOperation = operation;
 
 	m_slot->Clear();
+	m_slot->OnDragStarted(payload);
 
 	UInventoryPanel* invPanel = m_slot->GetInventoryPanel();
 	if (invPanel == nullptr || invPanel->inventory == nullptr) return;
@@ -73,8 +74,7 @@ void UItemIcon::HandleDragCancelled(UDragDropOperation* operation) {
 	UInventorySlot* slot = payload->slot;
 	PW_ASSERT(slot != nullptr, LogUI, TEXT("UItemDragPayload::slot is invalid."));
 
-	slot->SetItem(payload->item);
-	slot->SetQuantity(payload->quantity);
+	slot->OnDragCancelled(payload);
 
 	UInventoryPanel* invPanel = slot->GetInventoryPanel();
 	if (invPanel == nullptr || invPanel->inventory == nullptr) return;

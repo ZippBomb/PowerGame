@@ -28,6 +28,7 @@ void UCoalBoilerUI::NativeConstruct() {
 	inputComponent->BindAction(closeAction, ETriggerEvent::Triggered, this, &UCoalBoilerUI::Close);
 
 	inputSlot->onItemAdded.AddUObject(this, &UCoalBoilerUI::OnInputAdded);
+	inputSlot->onItemRemoved.AddUObject(this, &UCoalBoilerUI::OnInputRemoved);
 
 }
 
@@ -84,6 +85,13 @@ void UCoalBoilerUI::UpdateUI(const FItemSlot& input, float fuelProgress, float s
 
 void UCoalBoilerUI::OnInputAdded(UItemData* item, uint32 quantity) {
 
+	PW_ASSERT(m_instance != nullptr, LogUI, TEXT("Invalid machine instance."));
 	m_instance->OnInputAdded(item, quantity);
+
+}
+void UCoalBoilerUI::OnInputRemoved(UItemData* item, uint32 quantity) {
+
+	PW_ASSERT(m_instance != nullptr, LogUI, TEXT("Invalid machine instance."));
+	m_instance->OnInputRemoved(item, quantity);
 
 }

@@ -6,6 +6,8 @@
 
 #include "UI/Buildings/Machines/CoalBoilerUI.h"
 
+DEFINE_LOG_CATEGORY(LogMachines);
+
 ACoalBoilerInstance::ACoalBoilerInstance() {
 
 	PrimaryActorTick.bCanEverTick = true;
@@ -70,6 +72,13 @@ void ACoalBoilerInstance::OnInputAdded(UItemData* item, uint32 quantity) {
 	inputSlot.quantity += quantity;
 
 	StartBurning();
+
+}
+void ACoalBoilerInstance::OnInputRemoved(UItemData* item, uint32 quantity) {
+
+	PW_ASSERT(item == inputSlot.item, LogMachines, TEXT("item mismatch in input slot."));
+
+	inputSlot.quantity -= quantity;
 
 }
 

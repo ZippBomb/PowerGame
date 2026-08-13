@@ -13,6 +13,8 @@ class UItemData;
 
 class UCoalBoilerUI;
 
+DECLARE_LOG_CATEGORY_EXTERN(LogMachines, Log, All);
+
 UCLASS()
 class POWERGAME_API ACoalBoilerInstance : public AMeshBuildInstance {
 
@@ -47,6 +49,7 @@ protected:
 	bool uiOpen = false;
 
 	void OnInputAdded(UItemData* item, uint32 quantity);
+	void OnInputRemoved(UItemData* item, uint32 quantity);
 
 private:
 	UPROPERTY()

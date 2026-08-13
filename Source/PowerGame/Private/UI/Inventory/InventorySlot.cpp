@@ -49,9 +49,13 @@ void UInventorySlot::SetQuantity(uint32 value) {
 
 		quantityText->SetText(FText::FromString(FString::FromInt(value)));
 
-	}
-	else 
+	} else {
+
 		quantityText->SetVisibility(ESlateVisibility::Hidden);
+
+		SetItem(nullptr);
+
+	}
 
 }
 
@@ -59,6 +63,13 @@ void UInventorySlot::Clear() {
 
 	SetItem(nullptr);
 	SetQuantity(0);
+
+}
+
+void UInventorySlot::OnDragCancelled(UItemDragPayload* payload){
+
+	SetItem(payload->item);
+	SetQuantity(payload->quantity);
 
 }
 

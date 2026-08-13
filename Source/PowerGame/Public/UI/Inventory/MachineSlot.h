@@ -14,11 +14,18 @@ class POWERGAME_API UMachineSlot : public UInventorySlot {
 
 public:
 	FOnItemAdded onItemAdded;
-
+	FOnItemAdded onItemRemoved;
 	
 protected:
 	UPROPERTY(EditAnywhere)
 	TArray<TObjectPtr<UItemData>> allowedItems;
+
+	// Drag
+
+	virtual void OnDragStarted(UItemDragPayload* payload) override;
+	virtual void OnDragCancelled(UItemDragPayload* payload) override;
+
+	// Drop
 
 	virtual bool CanAcceptDrop(UItemData* droppedItem) const override;
 	virtual bool NativeOnDrop(const FGeometry& geometry, const FDragDropEvent& event, UDragDropOperation* operation) override;

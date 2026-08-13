@@ -66,5 +66,7 @@ private:
 
 	UFUNCTION()
 	void OnInputAdded(UItemData* item, uint32 quantity);
+	UFUNCTION()
+	void OnInputRemoved(UItemData* item, uint32 quantity);
 
 };
