@@ -44,6 +44,11 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
 	TObjectPtr<UTextBlock> quantityText = nullptr;
 
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UItemData> item;
+	UPROPERTY(VisibleAnywhere)
+	uint32 quantity = 0;
+
 	UPROPERTY()
 	uint32 slotIndex = 0;
 	UPROPERTY()
@@ -53,11 +58,7 @@ protected:
 
 	virtual bool NativeOnDrop(const FGeometry& geometry, const FDragDropEvent& event, UDragDropOperation* operation) override;
 
-private:
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UItemData> item;
-	UPROPERTY(VisibleAnywhere)
-	uint32 quantity = 0;
+	virtual bool CanAcceptDrop(UItemData* droppedItem) const { return true; }
 
 };
 

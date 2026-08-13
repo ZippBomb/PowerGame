@@ -11,7 +11,10 @@ class AMainPlayerController;
 
 class ACoalBoilerInstance;
 
+struct FItemSlot;
+
 class UInventoryPanel;
+class UMachineSlot;
 
 class UButton;
 class UTextBlock;
@@ -32,8 +35,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void Close();
 
-	UFUNCTION(BlueprintCallable)
-	void UpdateUI(float fuel, float steam);
+	void UpdateUI(const FItemSlot& input, float fuelProgress, float steam);
 
 	UFUNCTION(BlueprintCallable)
 	inline UInventoryPanel* GetInventoryPanel() const { return inventoryPanel; }
@@ -43,7 +45,7 @@ protected:
 	TObjectPtr<UInventoryPanel> inventoryPanel = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
-	TObjectPtr<UButton> button = nullptr;
+	TObjectPtr<UMachineSlot> inputSlot = nullptr;
 
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
 	TObjectPtr<UTextBlock> coalText = nullptr;
@@ -63,6 +65,6 @@ private:
 	TObjectPtr<AMainPlayerController> m_controller = nullptr;
 
 	UFUNCTION()
-	void AddCoal();
+	void OnInputAdded(UItemData* item, uint32 quantity);
 
 };

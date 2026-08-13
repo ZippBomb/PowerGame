@@ -1,4 +1,7 @@
 #include "UI/Buildings/Machines/CoalBoilerUI.h"
+
+#include "UI/Inventory/MachineSlot.h"
+
 #include "UI/MainHUD.h"
 
 #include "Building/Instances/Machines/CoalBoilerInstance.h"
@@ -6,7 +9,7 @@
 #include "Player/MainPlayerController.h"
 #include "Player/MainPlayerCharacter.h"
 
-#include "Inventory/InventoryComponent.h"
+#include "Inventory/PlayerInventoryComponent.h"
 
 #include <EnhancedInputComponent.h>
 #include <EnhancedInputSubsystems.h>
@@ -18,13 +21,13 @@ void UCoalBoilerUI::NativeConstruct() {
 
 	Super::NativeConstruct();
 
-	button->OnClicked.AddDynamic(this, &UCoalBoilerUI::AddCoal);
-
 	m_controller = Cast<AMainPlayerController>(GetOwningPlayer());
 	SetVisibility(ESlateVisibility::Hidden);
 
 	UEnhancedInputComponent* inputComponent = Cast<UEnhancedInputComponent>(m_controller->InputComponent);
 	inputComponent->BindAction(closeAction, ETriggerEvent::Triggered, this, &UCoalBoilerUI::Close);
+
+	inputSlot->onItemAdded.AddUObject(this, &UCoalBoilerUI::OnInputAdded);
 
 }
 
@@ -70,15 +73,17 @@ void UCoalBoilerUI::Close() {
 
 }
 
-void UCoalBoilerUI::UpdateUI(float fuel, float steam) {
+void UCoalBoilerUI::UpdateUI(const FItemSlot& input, float fuelProgress, float steam) {
 
-	coalText->SetText(FText::FromString(FString::Printf(TEXT("%4.2f"), fuel)));
+	inputSlot->SetData(input);
+
+	coalText->SetText(FText::FromString(FString::Printf(TEXT("%4.2f"), fuelProgress)));
 	steamText->SetText(FText::FromString(FString::Printf(TEXT("%4.2f"), steam)));
 
 }
 
-void UCoalBoilerUI::AddCoal() {
+void UCoalBoilerUI::OnInputAdded(UItemData* item, uint32 quantity) {
 
-	m_instance->AddCoal();
+	m_instance->OnInputAdded(item, quantity);
 
 }

@@ -17,12 +17,12 @@ struct POWERGAME_API FItemSlot {
 	GENERATED_BODY()
 
 public:
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UItemData> item;
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	uint32 quantity = 0;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	uint32 slotIndex = 0;
 
 	UInventorySlot* GetSlot(UInventoryPanel* invPanel) const;

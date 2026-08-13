@@ -66,6 +66,7 @@ bool UInventorySlot::NativeOnDrop(const FGeometry& geometry, const FDragDropEven
 
 	TObjectPtr<UItemDragPayload> payload = Cast<UItemDragPayload>(operation->Payload);
 	if (payload == nullptr) return false;
+	if (!CanAcceptDrop(payload->item)) return false;
 
 	if (item == payload->item) {
 
