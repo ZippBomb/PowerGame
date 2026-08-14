@@ -11,7 +11,8 @@ class UPauseMenu;
 class UInventoryMenu;
 class UBuildMenu;
 
-class UCoalBoilerUI;
+class AMachineBuildInstance;
+class UMachineUI;
 
 class UNetworkVisualizer;
 
@@ -32,9 +33,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	inline UNetworkVisualizer* GetNetworkVisualizer() const { return networkVisualizer; }
-
+	
 	UFUNCTION(BlueprintCallable)
-	inline UCoalBoilerUI* GetCoalBoilerUI() const { return coalBoilerUI; }
+	UMachineUI* GetMachineUI(TSubclassOf<UMachineUI> uiClass);
 
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
@@ -47,7 +48,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
 	TObjectPtr<UNetworkVisualizer> networkVisualizer = nullptr;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
-	TObjectPtr<UCoalBoilerUI> coalBoilerUI = nullptr;
+private:
+	UPROPERTY()
+	TMap<TSubclassOf<UMachineUI>, TObjectPtr<UMachineUI>> m_machineUIs;
+
+	void RegisterMachineUIs();
 
 };

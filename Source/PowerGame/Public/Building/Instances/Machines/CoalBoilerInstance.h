@@ -1,7 +1,7 @@
 #pragma once
 
 #include <CoreMinimal.h>
-#include "Building/Instances/MeshBuildInstance.h"
+#include "Building/Instances/Machines/MachineBuildInstance.h"
 
 #include "Inventory/ItemSlot.h"
 
@@ -13,10 +13,8 @@ class UItemData;
 
 class UCoalBoilerUI;
 
-DECLARE_LOG_CATEGORY_EXTERN(LogMachines, Log, All);
-
 UCLASS()
-class POWERGAME_API ACoalBoilerInstance : public AMeshBuildInstance {
+class POWERGAME_API ACoalBoilerInstance : public AMachineBuildInstance {
 
 	GENERATED_BODY()
 
@@ -28,8 +26,6 @@ public:
 	virtual void Tick(float deltaTime) override;
 
 	virtual void Interact(AMainPlayerCharacter* character) override;
-
-	void CloseUI() { uiOpen = false; }
 
 protected:
 	UPROPERTY(VisibleAnywhere)
@@ -45,16 +41,10 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Production")
 	float steamProduction = 2.0f;
 
-	UPROPERTY(VisibleAnywhere, Category = "UI")
-	bool uiOpen = false;
-
 	void OnInputAdded(UItemData* item, uint32 quantity);
 	void OnInputRemoved(UItemData* item, uint32 quantity);
 
 private:
-	UPROPERTY()
-	TObjectPtr<UCoalBoilerUI> m_ui = nullptr;
-
 	UPROPERTY()
 	float consumeTimer = 0.0f;
 

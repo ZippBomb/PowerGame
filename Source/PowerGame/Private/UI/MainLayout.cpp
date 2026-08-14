@@ -8,7 +8,7 @@
 
 #include "UI/Power/NetworkVisualizer.h"
 
-#include "UI/Buildings/Machines/CoalBoilerUI.h"
+#include "UI/Buildings/Machines/MachineUI.h"
 
 #include "Player/MainPlayerController.h"
 #include "Player/MainPlayerCharacter.h"
@@ -17,11 +17,13 @@
 
 #include "Power/PowerNetwork.h"
 
+#include <Blueprint/WidgetTree.h>
+
 void UMainLayout::NativeConstruct() {
 
 	Super::NativeConstruct();
 
-	AMainPlayerController* controller = Cast<AMainPlayerController>(GetWorld()->GetFirstPlayerController());
+	AMainPlayerController* controller = Cast<AMainPlayerController>(GetOwningPlayer());
 	PW_ASSERT(controller != nullptr, LogUI, TEXT("Could not retrieve first player controller."));
 
 	AMainPlayerCharacter* character = Cast<AMainPlayerCharacter>(controller->GetCharacter());
@@ -42,6 +44,27 @@ void UMainLayout::NativeConstruct() {
 
 	networkVisualizer->InitializeUI(controller);
 
-	coalBoilerUI->SetOwningPlayer(controller);
+	RegisterMachineUIs();
+
+}
+
+void UMainLayout::RegisterMachineUIs() {
+	
+	WidgetTree->ForEachWidget([this](UWidget* widget) {
+
+		UMachineUI* machineUI = Cast<UMachineUI>(widget);
+		if (machineUI == nullptr) return;
+
+		m_machineUIs.Add(machineUI->GetClass(), machineUI);
+		machineUI->SetOwningPlayer(GetOwningPlayer());
+
+	});
+
+}
+
+UMachineUI* UMainLayout::GetMachineUI(TSubclassOf<UMachineUI> uiClass) {
+
+	PW_ASSERT(m_machineUIs.Contains(uiClass), LogUI, TEXT("Machine UI '%s' was not found in UMainLayout::machineUIs."), *GetNameSafe(uiClass));
+	return m_machineUIs[uiClass];
 
 }

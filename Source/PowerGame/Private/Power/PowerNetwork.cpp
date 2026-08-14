@@ -96,7 +96,7 @@ void APowerNetwork::DisconnectLoad(ALoad* load) {
 
 	PW_ASSERT(m_loads.Contains(load), LogPower, TEXT("Can't disconnect load ('%s') that isn't connected to network: '%s'"), *GetNameSafe(load), *GetNameSafe(this));
 	m_loads.Remove(load);
-
+	
 }
 void APowerNetwork::DisconnectWire(AWire* wire) {
 

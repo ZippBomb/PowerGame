@@ -6,8 +6,6 @@
 
 #include "UI/Buildings/Machines/CoalBoilerUI.h"
 
-DEFINE_LOG_CATEGORY(LogMachines);
-
 ACoalBoilerInstance::ACoalBoilerInstance() {
 
 	PrimaryActorTick.bCanEverTick = true;
@@ -37,7 +35,6 @@ void ACoalBoilerInstance::Tick(float deltaTime) {
 		} else // No more fuel left, stop burning
 			return StopBurning();
 
-
 	} else
 		consumeTimer -= deltaTime;
 
@@ -48,19 +45,16 @@ void ACoalBoilerInstance::Tick(float deltaTime) {
 	// UI update
 
 	if (uiOpen)
-		m_ui->UpdateUI(inputSlot, consumeTimer * fuelConsumption, steam);
+		Cast<UCoalBoilerUI>(ui)->UpdateUI(inputSlot, consumeTimer * fuelConsumption, steam);
 
 }
 
 void ACoalBoilerInstance::Interact(AMainPlayerCharacter* character) {
 
-	if (m_ui == nullptr)
-		m_ui = character->GetUI()->GetCoalBoilerUI();
+	Super::Interact(character);
 
-	m_ui->Open(this);
-	m_ui->UpdateUI(inputSlot, consumeTimer * fuelConsumption, steam);
-
-	uiOpen = true;
+	UCoalBoilerUI* coalBoilerUI = Cast<UCoalBoilerUI>(ui);
+	coalBoilerUI->UpdateUI(inputSlot, consumeTimer * fuelConsumption, steam);
 
 }
 
