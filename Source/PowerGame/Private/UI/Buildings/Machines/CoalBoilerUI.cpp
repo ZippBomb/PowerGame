@@ -28,21 +28,11 @@ void UCoalBoilerUI::UpdateUI(const FItemSlot& input, float fuelProgress, float s
 
 void UCoalBoilerUI::OnInputAdded(UItemData* item, uint32 quantity) {
 
-	PW_ASSERT(instance != nullptr, LogUI, TEXT("Invalid machine instance."));
-
-	ACoalBoilerInstance* coalBoiler = Cast<ACoalBoilerInstance>(instance);
-	PW_ASSERT(coalBoiler != nullptr, LogUI, TEXT("Coal boiler UI was not given ACoalBoilerInstance instance."));
-
-	coalBoiler->OnInputAdded(item, quantity);
+	GetInstance<ACoalBoilerInstance>()->OnInputAdded(item, quantity);
 
 }
 void UCoalBoilerUI::OnInputRemoved(UItemData* item, uint32 quantity) {
-
-	PW_ASSERT(instance != nullptr, LogUI, TEXT("Invalid machine instance."));
-
-	ACoalBoilerInstance* coalBoiler = Cast<ACoalBoilerInstance>(instance);
-	PW_ASSERT(coalBoiler != nullptr, LogUI, TEXT("Coal boiler UI was not given ACoalBoilerInstance instance."));
-
-	coalBoiler->OnInputRemoved(item, quantity);
+	
+	GetInstance<ACoalBoilerInstance>()->OnInputRemoved(item, quantity);
 
 }

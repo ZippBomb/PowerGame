@@ -30,4 +30,13 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UMachineUI> ui = nullptr;
 
+	template<typename T> T* GetUI() const {
+
+		T* ret = Cast<T>(ui);
+		PW_ASSERT(ret != nullptr, LogMachines, TEXT("Could not cast UI."));
+
+		return ret;
+
+	}
+
 };

@@ -7,8 +7,6 @@
 
 #include "CoalBoilerUI.generated.h"
 
-class ACoalBoilerInstance;
-
 struct FItemSlot;
 
 class UMachineSlot;

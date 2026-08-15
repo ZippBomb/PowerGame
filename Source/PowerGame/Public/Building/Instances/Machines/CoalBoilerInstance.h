@@ -5,8 +5,6 @@
 
 #include "Inventory/ItemSlot.h"
 
-#include "Core/Core.h"
-
 #include "CoalBoilerInstance.generated.h"
 
 class UItemData;

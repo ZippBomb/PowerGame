@@ -45,7 +45,7 @@ void ACoalBoilerInstance::Tick(float deltaTime) {
 	// UI update
 
 	if (uiOpen)
-		Cast<UCoalBoilerUI>(ui)->UpdateUI(inputSlot, consumeTimer * fuelConsumption, steam);
+		GetUI<UCoalBoilerUI>()->UpdateUI(inputSlot, consumeTimer * fuelConsumption, steam);
 
 }
 
@@ -53,8 +53,7 @@ void ACoalBoilerInstance::Interact(AMainPlayerCharacter* character) {
 
 	Super::Interact(character);
 
-	UCoalBoilerUI* coalBoilerUI = Cast<UCoalBoilerUI>(ui);
-	coalBoilerUI->UpdateUI(inputSlot, consumeTimer * fuelConsumption, steam);
+	GetUI<UCoalBoilerUI>()->UpdateUI(inputSlot, consumeTimer * fuelConsumption, steam);
 
 }
 
@@ -77,6 +76,8 @@ void ACoalBoilerInstance::OnInputRemoved(UItemData* item, uint32 quantity) {
 }
 
 void ACoalBoilerInstance::StartBurning() {
+
+	if (burning) return;
 
 	burning = true;
 	consumeTimer = 0.0f;

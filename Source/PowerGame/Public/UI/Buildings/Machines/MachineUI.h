@@ -2,6 +2,7 @@
 
 #include <CoreMinimal.h>
 #include "UI/UserWidgetBase.h"
+#include "UI/MainHUD.h"
 
 #include "Core/Core.h"
 
@@ -47,5 +48,14 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<AMainPlayerController> controller = nullptr;
+
+	template<typename T> T* GetInstance() {
+
+		T* ret = Cast<T>(instance);
+		PW_ASSERT(ret != nullptr, LogUI, TEXT("Can't get typed instance."));
+
+		return ret;
+
+	}
 
 };
