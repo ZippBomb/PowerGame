@@ -85,6 +85,7 @@ private:
 	TSet<TObjectPtr<ALoad>> m_loads;
 	UPROPERTY(VisibleAnywhere)
 	TSet<TObjectPtr<ABuildInstance>> m_miscBuildInstances;
+
 	UPROPERTY(VisibleAnywhere)
 	TSet<TObjectPtr<AWire>> m_connections;
 

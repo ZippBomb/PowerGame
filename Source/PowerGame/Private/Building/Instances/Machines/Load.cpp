@@ -1,4 +1,4 @@
-#include "Building/Instances/Power/Load.h"
+#include "Building/Instances/Machines/Load.h"
 
 #include "Power/PowerNetwork.h"
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <CoreMinimal.h>
-#include <Building/Instances/MeshBuildInstance.h>
+#include "Building/Instances/Machines/MachineBuildInstance.h"
 
 #include "Core/Core.h"
 
@@ -22,7 +22,7 @@ struct FGeneratorSaveData : public FBuildingSaveData {
 };
 
 UCLASS()
-class POWERGAME_API AGenerator : public AMeshBuildInstance {
+class POWERGAME_API AGenerator : public AMachineBuildInstance {
 
 	GENERATED_BODY()
 

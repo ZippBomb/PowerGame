@@ -1,4 +1,4 @@
-#include "Building/Instances/Power/Generator.h"
+#include "Building/Instances/Machines/Generator.h"
 
 #include "Power/PowerNetwork.h"
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <CoreMinimal.h>
-#include "Building/Instances/Machines/MachineBuildInstance.h"
+#include "Building/Instances/Machines/Generator.h"
 
 #include "Inventory/ItemSlot.h"
 
@@ -12,7 +12,7 @@ class UItemData;
 class UCoalBoilerUI;
 
 UCLASS()
-class POWERGAME_API ACoalBoilerInstance : public AMachineBuildInstance {
+class POWERGAME_API ACoalBoilerInstance : public AGenerator {
 
 	GENERATED_BODY()
 

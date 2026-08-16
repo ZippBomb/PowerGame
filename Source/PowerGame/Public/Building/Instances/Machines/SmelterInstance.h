@@ -1,7 +1,7 @@
 #pragma once
 
 #include <CoreMinimal.h>
-#include "Building/Instances/Machines/MachineBuildInstance.h"
+#include "Building/Instances/Machines/Load.h"
 
 #include "Inventory/ItemSlot.h"
 
@@ -13,7 +13,7 @@ class URecipeData;
 class USmelterUI;
 
 UCLASS()
-class POWERGAME_API ASmelterInstance : public AMachineBuildInstance {
+class POWERGAME_API ASmelterInstance : public ALoad {
 
 	GENERATED_BODY()
 	
