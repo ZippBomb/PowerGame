@@ -3,6 +3,8 @@
 #include <CoreMinimal.h>
 #include <GameFramework/Actor.h>
 
+#include "Core/Core.h"
+
 #include "BuildGhost.generated.h"
 
 class UBuild;
@@ -53,7 +55,6 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UStaticMeshComponent> m_mesh = nullptr;
 
-private:
 	virtual void BeginPlay() override;
 	
 };

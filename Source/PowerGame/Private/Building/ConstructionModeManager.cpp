@@ -197,7 +197,8 @@ void UConstructionModeManager::SelectDeconstructTool() {
 
 		m_selectedBuild = nullptr;
 
-		m_buildGhost->Reset();
+		if (m_buildGhost != nullptr)
+			m_buildGhost->Reset();
 		m_buildMenu->Close();
 
 	} else // If build tool was selected prior, it added the IMC already.
@@ -219,7 +220,8 @@ void UConstructionModeManager::ExitConstructionMode() {
 
 		m_selectedBuild = nullptr;
 
-		m_buildGhost->Reset();
+		if (m_buildGhost != nullptr)
+			m_buildGhost->Reset();
 		m_buildMenu->Close();
 
 		break;

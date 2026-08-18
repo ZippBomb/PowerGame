@@ -2,6 +2,7 @@
 
 #include <CoreMinimal.h>
 #include "Building/BuildGhost.h"
+
 #include "BuildGhostNormal.generated.h"
 
 class UBoxComponent;
@@ -15,6 +16,9 @@ public:
 	ABuildGhostNormal();
 
 	virtual inline bool IsValidPlacement() const override { return m_validPlacement; }
+
+protected:
+	virtual void BeginPlay() override;
 
 private:
 	UPROPERTY(VisibleAnywhere)

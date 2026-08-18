@@ -1,4 +1,5 @@
 #include "Building/BuildGhostNormal.h"
+#include "Building/ConstructionModeManager.h"
 
 #include <Components/BoxComponent.h>
 
@@ -9,6 +10,15 @@ ABuildGhostNormal::ABuildGhostNormal() {
 
 	validityTrigger->OnComponentBeginOverlap.AddDynamic(this, &ABuildGhostNormal::OnOverlapBegin);
 	validityTrigger->OnComponentEndOverlap.AddDynamic(this, &ABuildGhostNormal::OnOverlapEnd);
+
+}
+
+void ABuildGhostNormal::BeginPlay() {
+
+	Super::BeginPlay();
+
+	PW_ASSERT(m_validMaterial != nullptr, LogBuilding, TEXT("Build ghost valid material must be set."));
+	m_mesh->SetOverlayMaterial(m_validMaterial);
 
 }
 
