@@ -19,14 +19,8 @@ void AGenerator::EndPlay(const EEndPlayReason::Type reason) {
 
 	if (m_powerNetwork == nullptr) return;
 
-	m_powerNetwork->DisconnectGenerator(this);
+	//m_powerNetwork->DisconnectGenerator(this);
 	m_powerNetwork = nullptr;
-
-}
-
-void AGenerator::Respond(float freqError) {
-
-	m_currentOutput = maxOutput * FMath::Clamp(1 + freqError * responseStrength, 0.0f, 1.0f);
 
 }
 
@@ -40,7 +34,6 @@ void AGenerator::SerializeSaveData(FInstancedStruct* out) {
 	FGeneratorSaveData& saveData = out->GetMutable<FGeneratorSaveData>();
 
 	saveData.maxOutput = maxOutput;
-	saveData.responseStrength = responseStrength;
 
 }
 void AGenerator::DeserializeSaveData(const FInstancedStruct& data) {
@@ -51,6 +44,5 @@ void AGenerator::DeserializeSaveData(const FInstancedStruct& data) {
 	const FGeneratorSaveData& saveData = data.Get<FGeneratorSaveData>();
 
 	maxOutput = saveData.maxOutput;
-	responseStrength = saveData.responseStrength;
 
 }

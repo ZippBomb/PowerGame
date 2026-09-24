@@ -47,9 +47,9 @@ public:
 	static APowerNetwork* HandleConnection(ABuildInstance* buildInstanceA, ABuildInstance* buildInstanceB, AWire* wire);
 
 	UFUNCTION(BlueprintCallable)
-	inline float GetBaseFrequency() const { return baseFrequency; }
+	inline float GetNominalFrequency() const { return nominalFrequency; }
 	UFUNCTION(BlueprintCallable)
-	inline float GetBaseVoltage() const { return baseVoltage; }
+	inline float GetNominalVoltage() const { return nominalVoltage; }
 
 	UFUNCTION(BlueprintCallable)
 	inline bool IsDead() const { return m_dead; }
@@ -58,26 +58,33 @@ public:
 	UFUNCTION(BlueprintCallable)
 	inline float GetVoltage() const { return m_voltage; }
 
+	UFUNCTION(BlueprintCallable)
+	inline void Enable() { m_dead = false; }
+	UFUNCTION(BlueprintCallable)
+	inline void Disable() { m_dead = true; }
+
 protected:
 	UPROPERTY(EditAnywhere)
-	float baseFrequency = 50.0f;
+	float nominalFrequency = 50.0f;
 	UPROPERTY(EditAnywhere)
-	float baseVoltage = 230.0f;
+	float nominalVoltage = 230.0f;
 	UPROPERTY(EditAnywhere)
 	float responseStrength = 0.0005f;
 
 private:
-	UPROPERTY(VisibleAnywhere)
+	UPROPERTY(EditAnywhere)
 	bool m_dead = true;
 	UPROPERTY(VisibleAnywhere)
-	float m_voltage = 0.0f;
-	UPROPERTY(VisibleAnywhere)
 	float m_frequency = 0.0f;
+	UPROPERTY(VisibleAnywhere)
+	float m_voltage = 0.0f;
 
 	UPROPERTY(VisibleAnywhere)
-	float m_totalSupply = 0.0f;
+	float m_demand = 0.0f;
 	UPROPERTY(VisibleAnywhere)
-	float m_totalDemand = 0.0f;
+	float m_supply = 0.0f;
+	UPROPERTY(VisibleAnywhere)
+	float m_gridInertia = 0.0f;
 
 	UPROPERTY(VisibleAnywhere)
 	TSet<TObjectPtr<AGenerator>> m_generators;

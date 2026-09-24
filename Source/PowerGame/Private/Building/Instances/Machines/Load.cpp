@@ -10,14 +10,8 @@ void ALoad::EndPlay(const EEndPlayReason::Type reason) {
 
 	if (m_powerNetwork == nullptr) return;
 
-	m_powerNetwork->DisconnectLoad(this);
+	//m_powerNetwork->DisconnectLoad(this);
 	m_powerNetwork = nullptr;
-
-}
-
-void ALoad::Update(float supplyRatio) {
-
-	m_suppliedPower = demand * supplyRatio;
 
 }
 

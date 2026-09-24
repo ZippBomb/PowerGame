@@ -20,18 +20,24 @@ void APowerNetwork::Tick(float deltaTime) {
 
 	Super::Tick(deltaTime);
 
-	// First calculate the total supply and demand
-
-	m_totalSupply = 0.0f;
-	m_totalDemand = 0.0f;
-
-	for (TObjectPtr<AGenerator> generator : m_generators)
-		m_totalSupply += generator->GetMaxOutput();
-
+	// TODO: This should not be recalculated every frame but instead
+	//		 each Generator and Load should modify these once when their
+	//		 values change
+	m_demand = 0.0f;
+	m_supply = 0.0f;
+	m_gridInertia = 0.0f;
+	
 	for (TObjectPtr<ALoad> load : m_loads)
-		m_totalDemand += load->GetDemand();
+		m_demand += load->GetDemand();
+	for (TObjectPtr<AGenerator> generator : m_generators) {
 
-	if (m_totalSupply == 0.0f) {
+		m_supply += generator->GetOutput();
+		m_gridInertia += generator->GetInertia();
+
+	}
+
+	if (m_dead) return;
+	if (m_supply == 0.0f) {
 
 		m_dead = true;
 		m_frequency = 0.0f;
@@ -40,37 +46,12 @@ void APowerNetwork::Tick(float deltaTime) {
 		return;
 
 	}
-
-	if (m_totalDemand == 0.0f) return;
+	if (m_demand == 0.0f) return;
 
 	// Calculate grid frequency
 
-	float imbalance = m_totalSupply - m_totalDemand;
-	m_frequency += imbalance * responseStrength * deltaTime;
-
-	// Update generators
-
-	float error = baseFrequency - m_frequency;
-	float totalGeneration = 0.0f;
-
-	for (TObjectPtr<AGenerator> generator : m_generators) {
-
-		generator->Respond(error);
-		totalGeneration += generator->GetCurrentOutput();
-
-	}
-
-	// Update loads
-
-	float supplyRatio = FMath::Clamp(totalGeneration / m_totalDemand, 0.0f, 1.0f);
-
-	for (TObjectPtr<ALoad> load : m_loads)
-		load->Update(supplyRatio);
-
-	// Update voltage
-	// TODO: This is just basic and crude, this should be updated
-
-	m_voltage = baseVoltage * FMath::Clamp(supplyRatio, 0.9f, 1.1f);
+	float powerImbalance = (m_supply - m_demand) / m_gridInertia;
+	m_frequency += powerImbalance * responseStrength * deltaTime;
 
 }
 
@@ -124,8 +105,8 @@ void APowerNetwork::DisconnectBuilding(ABuildInstance* building) {
 
 void APowerNetwork::SerializeSaveData(FNetworkSaveData* out) {
 
-	out->baseFrequency = baseFrequency;
-	out->baseVoltage = baseVoltage;
+	out->baseFrequency = nominalFrequency;
+	out->baseVoltage = nominalVoltage;
 	out->responseStrength = responseStrength;
 
 	out->dead = m_dead;
@@ -161,8 +142,8 @@ void APowerNetwork::SerializeSaveData(FNetworkSaveData* out) {
 }
 void APowerNetwork::DeserializeSaveData(const FNetworkSaveData& data, TMap<FGuid, TObjectPtr<ABuildInstance>>& buildingsMap) {
 
-	baseFrequency = data.baseFrequency;
-	baseVoltage = data.baseVoltage;
+	nominalFrequency = data.baseFrequency;
+	nominalVoltage = data.baseVoltage;
 	responseStrength = data.responseStrength;
 
 	m_dead = data.dead;
@@ -310,8 +291,8 @@ void APowerNetwork::AddBuildInstance(ABuildInstance* buildInstance) {
 		if (m_generators.Num() == 1) {
 
 			m_dead = false;
-			m_frequency = baseFrequency;
-			m_voltage = baseVoltage;
+			m_frequency = nominalFrequency;
+			m_voltage = nominalVoltage;
 
 		}
 

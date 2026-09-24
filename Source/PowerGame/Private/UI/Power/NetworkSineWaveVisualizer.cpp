@@ -16,7 +16,7 @@ int32 UNetworkSineWaveVisualizer::NativePaint(const FPaintArgs& args, const FGeo
 	if (showDebugWave)
 		frequencyDiff = debugFrequency - 50.0f;
 	else if (m_network != nullptr && !m_network->IsDead())
-		frequencyDiff = m_network->GetFrequency() - m_network->GetBaseFrequency();
+		frequencyDiff = m_network->GetFrequency() - m_network->GetNominalFrequency();
 	else return layer;
 
 	frequencyDiff *= amplification;

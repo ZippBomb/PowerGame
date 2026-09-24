@@ -27,28 +27,33 @@ class POWERGAME_API AGenerator : public AMachineBuildInstance {
 	GENERATED_BODY()
 
 public:
-	UFUNCTION(BlueprintCallable)
-	void Respond(float freqError);
-
 	virtual void SerializeSaveData(FInstancedStruct* out) override;
 	virtual void DeserializeSaveData(const FInstancedStruct& data) override;
 
 	UFUNCTION(BlueprintCallable)
 	inline float GetMaxOutput() const { return maxOutput; }
+
 	UFUNCTION(BlueprintCallable)
-	inline float GetCurrentOutput() const { return m_currentOutput; }
+	inline float GetOutput() const { return maxOutput * outputLevel; }
+	UFUNCTION(BlueprintCallable)
+	inline float GetOutputLevel() const { return outputLevel; }
+
+	UFUNCTION(BlueprintCallable)
+	inline float GetInertia() const { return inertia; }
+
+	UFUNCTION(BlueprintCallable)
+	inline void SetOutputLevel(float value) { outputLevel = value; }
 	
 protected:
-	virtual void BeginPlay() override;
-	virtual void EndPlay(const EEndPlayReason::Type reason) override;
-
-private:
 	UPROPERTY(EditAnywhere, Category = "Properties")
 	float maxOutput = 100.0f;
-	UPROPERTY(EditAnywhere, Category = "Properties")
-	float responseStrength = 1.0f;
+	UPROPERTY(EditAnywhere, Category = "Production")
+	float outputLevel = 1.0f;
 
-	UPROPERTY(EditAnywhere, Category = "Properties")
-	float m_currentOutput = 100.0f;
+	UPROPERTY(EditAnywhere, Category = "Production")
+	float inertia = 1.0f;
+
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type reason) override;
 
 };
