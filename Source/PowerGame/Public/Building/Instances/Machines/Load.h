@@ -33,7 +33,7 @@ public:
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Properties")
-	float demand = 0.0f;
+	float demand = 50.0f;
 	
 	virtual void EndPlay(const EEndPlayReason::Type reason) override;
 

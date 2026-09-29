@@ -288,14 +288,6 @@ void APowerNetwork::AddBuildInstance(ABuildInstance* buildInstance) {
 		m_generators.Add(generator);
 		generator->SetNetwork(this);
 
-		if (m_generators.Num() == 1) {
-
-			m_dead = false;
-			m_frequency = nominalFrequency;
-			m_voltage = nominalVoltage;
-
-		}
-
 	} else if (ALoad* load = Cast<ALoad>(buildInstance)) {
 
 		m_loads.Add(load);
@@ -305,6 +297,27 @@ void APowerNetwork::AddBuildInstance(ABuildInstance* buildInstance) {
 
 		m_miscBuildInstances.Add(buildInstance);
 		buildInstance->SetNetwork(this);
+
+	}
+
+}
+
+void APowerNetwork::SetIsDead(bool value) {
+
+	m_dead = value;
+
+	if (m_dead) {
+
+		if (m_supply == 0.0f) return;
+
+		m_voltage = 0.0f;
+		m_frequency = 0.0f;
+
+	} else {
+
+		// TODO: This is a sort of hack right now, this should be set by the generators
+		m_voltage = nominalVoltage;
+		m_frequency = nominalFrequency;
 
 	}
 

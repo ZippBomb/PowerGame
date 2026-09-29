@@ -59,9 +59,12 @@ public:
 	inline float GetVoltage() const { return m_voltage; }
 
 	UFUNCTION(BlueprintCallable)
-	inline void Enable() { m_dead = false; }
+	inline float GetSupply() const { return m_supply; }
 	UFUNCTION(BlueprintCallable)
-	inline void Disable() { m_dead = true; }
+	inline float GetDemand() const { return m_demand; }
+
+	UFUNCTION(BlueprintCallable)
+	void SetIsDead(bool value);
 
 protected:
 	UPROPERTY(EditAnywhere)

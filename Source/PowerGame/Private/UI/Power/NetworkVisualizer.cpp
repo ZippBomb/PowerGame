@@ -8,6 +8,7 @@
 #include "Player/MainPlayerController.h"
 
 #include <Components/TextBlock.h>
+#include <Components/CheckBox.h>
 
 #include <EnhancedInputComponent.h>
 #include <EnhancedInputSubsystems.h>
@@ -28,6 +29,8 @@ void UNetworkVisualizer::InitializeUI(AMainPlayerController* controller) {
 
 	inputComponent->BindAction(closeAction, ETriggerEvent::Triggered, this, &UNetworkVisualizer::Close);
 
+	aliveToggle->OnCheckStateChanged.AddDynamic(this, &UNetworkVisualizer::OnAliveToggled);
+
 }
 
 void UNetworkVisualizer::NativeTick(const FGeometry& geometry, float deltaTime) {
@@ -38,6 +41,19 @@ void UNetworkVisualizer::NativeTick(const FGeometry& geometry, float deltaTime) 
 
 	frequencyText->SetText(FText::FromString(FString::Printf(TEXT("Frequency: %.2f"), m_network->GetFrequency())));
 	voltageText->SetText(FText::FromString(FString::Printf(TEXT("Voltage: %.2f"), m_network->GetVoltage())));
+
+	supplyText->SetText(FText::FromString(FString::Printf(TEXT("Supply: %.2f"), m_network->GetSupply())));
+	demandText->SetText(FText::FromString(FString::Printf(TEXT("Demand: %.2f"), m_network->GetDemand())));
+
+	// This is a bit of weird logic, the checkbox is flipped compared to if the network is dead so if they are
+	// equal (checkbox is checked but network is dead) it means theres a mismatch.
+
+	if (aliveToggle->IsChecked() == m_network->IsDead()) {
+
+		ECheckBoxState checkedState = m_network->IsDead() ? ECheckBoxState::Unchecked : ECheckBoxState::Checked;
+		aliveToggle->SetCheckedState(checkedState);
+
+	}
 
 }
 
@@ -53,11 +69,7 @@ void UNetworkVisualizer::Open(APowerNetwork* network) {
 
 	PW_ASSERT(m_controller != nullptr, LogUI, TEXT("NetworkVisualizer was not assigned a player controller, make sure you called UNetworkInitializer::InitializeUI()."));
 
-	m_controller->SetShowMouseCursor(true);
-	m_controller->SetInputMode(FInputModeGameAndUI());
-	m_controller->DisableDefaultIMC();
-	m_controller->AddMappingContext(uiIMC);
-
+	m_controller->OpenUI(this);
 	sineWaveVisualizer->SetNetwork(m_network);
 
 }
@@ -70,11 +82,14 @@ void UNetworkVisualizer::Close() {
 
 	PW_ASSERT(m_controller != nullptr, LogUI, TEXT("NetworkVisualizer was not assigned a player controller, make sure you called UNetworkInitializer::InitializeUI()."));
 
-	m_controller->SetShowMouseCursor(false);
-	m_controller->SetInputMode(FInputModeGameOnly());
-	m_controller->EnableDefaultIMC();
-	m_controller->RemoveMappingContext(uiIMC);
-
+	m_controller->CloseUI();
 	sineWaveVisualizer->SetNetwork(nullptr);
+
+}
+
+void UNetworkVisualizer::OnAliveToggled(bool alive) {
+
+	if (m_network == nullptr) return;
+	m_network->SetIsDead(!alive);
 
 }

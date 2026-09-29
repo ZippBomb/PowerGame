@@ -8,12 +8,19 @@
 class UInputMappingContext;
 class UEnhancedInputLocalPlayerSubsystem;
 
+class UUserWidget;
+
 UCLASS()
 class POWERGAME_API AMainPlayerController : public APlayerController {
 
 	GENERATED_BODY()
 
 public:
+	UFUNCTION(BlueprintCallable)
+	void OpenUI(UUserWidget* widget);
+	UFUNCTION(BlueprintCallable)
+	void CloseUI();
+
 	UFUNCTION(BlueprintCallable)
 	void EnableDefaultIMC();
 	UFUNCTION(BlueprintCallable)
@@ -27,6 +34,8 @@ public:
 protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputMappingContext> defaultIMC = nullptr;
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputMappingContext> uiIMC = nullptr;
 
 private:
 	virtual void BeginPlay() override;

@@ -16,6 +16,7 @@ class APowerNetwork;
 // UE classes
 
 class UTextBlock;
+class UCheckBox;
 
 class UInputAction;
 class UInputMappingContext;
@@ -42,6 +43,14 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
 	TObjectPtr<UTextBlock> voltageText = nullptr;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
+	TObjectPtr<UTextBlock> supplyText = nullptr;
+	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
+	TObjectPtr<UTextBlock> demandText = nullptr;
+
+	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
+	TObjectPtr<UCheckBox> aliveToggle = nullptr;
+
 	virtual void NativeTick(const FGeometry& geometry, float deltaTime) override;
 
 private:
@@ -53,10 +62,11 @@ private:
 	// TODO: This should be moved to a general UI IMC.
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> closeAction = nullptr;
-	UPROPERTY(EditAnywhere, Category = "Input")
-	TObjectPtr<UInputMappingContext> uiIMC = nullptr;
 
 	UPROPERTY()
 	TObjectPtr<AMainPlayerController> m_controller;
+
+	UFUNCTION()
+	void OnAliveToggled(bool alive);
 
 };
