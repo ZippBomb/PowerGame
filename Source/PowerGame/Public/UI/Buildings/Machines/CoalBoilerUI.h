@@ -13,6 +13,7 @@ class UMachineSlot;
 
 class UTextBlock;
 class USlider;
+class UCheckBox;
 
 UCLASS(Abstract)
 class POWERGAME_API UCoalBoilerUI : public UMachineUI {
@@ -41,6 +42,9 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
 	TObjectPtr<USlider> outputLevelSlider = nullptr;
 
+	UPROPERTY(BlueprintReadOnly, Category = "Widgets", meta = (BindWidget))
+	TObjectPtr<UCheckBox> activeToggle = nullptr;
+
 private:
 	UFUNCTION()
 	void OnInputAdded(UItemData* item, uint32 quantity);
@@ -49,5 +53,7 @@ private:
 
 	UFUNCTION()
 	void OnOutputLevelChanged(float value);
+	UFUNCTION()
+	void OnActiveToggled(bool active);
 
 };

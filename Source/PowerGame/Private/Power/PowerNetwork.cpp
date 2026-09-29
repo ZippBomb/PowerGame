@@ -31,6 +31,8 @@ void APowerNetwork::Tick(float deltaTime) {
 		m_demand += load->GetDemand();
 	for (TObjectPtr<AGenerator> generator : m_generators) {
 
+		if (!generator->GetIsActive()) continue;
+
 		m_supply += generator->GetOutput();
 		m_gridInertia += generator->GetInertia();
 

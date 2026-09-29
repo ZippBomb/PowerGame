@@ -31,27 +31,33 @@ public:
 	virtual void DeserializeSaveData(const FInstancedStruct& data) override;
 
 	UFUNCTION(BlueprintCallable)
-	inline float GetMaxOutput() const { return maxOutput; }
+	inline float GetOutput() const { return maxOutput * outputLevel; }
 
 	UFUNCTION(BlueprintCallable)
-	inline float GetOutput() const { return maxOutput * outputLevel; }
+	inline float GetMaxOutput() const { return maxOutput; }
+	UFUNCTION(BlueprintCallable)
+	inline float GetInertia() const { return inertia; }
+
+	UFUNCTION(BlueprintCallable)
+	inline bool GetIsActive() const { return active; }
 	UFUNCTION(BlueprintCallable)
 	inline float GetOutputLevel() const { return outputLevel; }
 
 	UFUNCTION(BlueprintCallable)
-	inline float GetInertia() const { return inertia; }
-
+	inline void SetIsActive(bool value) { active = value; }
 	UFUNCTION(BlueprintCallable)
 	inline void SetOutputLevel(float value) { outputLevel = value; }
 	
 protected:
 	UPROPERTY(EditAnywhere, Category = "Properties")
 	float maxOutput = 100.0f;
-	UPROPERTY(EditAnywhere, Category = "Production")
-	float outputLevel = 1.0f;
+	UPROPERTY(EditAnywhere, Category = "Properties")
+	float inertia = 1.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Production")
-	float inertia = 1.0f;
+	bool active = false;
+	UPROPERTY(EditAnywhere, Category = "Production")
+	float outputLevel = 1.0f;
 
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type reason) override;

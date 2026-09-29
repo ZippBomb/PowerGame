@@ -16,7 +16,7 @@ void ACoalBoilerInstance::Tick(float deltaTime) {
 
 	Super::Tick(deltaTime);
 
-	if (!burning) return;
+	if (!active || !burning) return;
 
 	if (consumeTimer <= 0.0f) {
 

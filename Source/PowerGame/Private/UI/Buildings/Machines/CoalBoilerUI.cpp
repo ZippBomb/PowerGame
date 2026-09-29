@@ -8,6 +8,7 @@
 
 #include <Components/TextBlock.h>
 #include <Components/Slider.h>
+#include <Components/CheckBox.h>
 
 void UCoalBoilerUI::NativeConstruct() {
 
@@ -17,6 +18,7 @@ void UCoalBoilerUI::NativeConstruct() {
 	inputSlot->onItemRemoved.AddUObject(this, &UCoalBoilerUI::OnInputRemoved);
 
 	outputLevelSlider->OnValueChanged.AddDynamic(this, &UCoalBoilerUI::OnOutputLevelChanged);
+	activeToggle->OnCheckStateChanged.AddDynamic(this, &UCoalBoilerUI::OnActiveToggled);
 
 }
 
@@ -34,6 +36,13 @@ void UCoalBoilerUI::UpdateUI(const FItemSlot& input, float fuelProgress, float s
 	outputLevelText->SetText(FText::FromString(FString::Printf(TEXT("%3.0f%%"), outputLevel * 100.0f)));
 
 	outputText->SetText(FText::FromString(FString::Printf(TEXT("%3.0f / %3.0fkW"), maxOutput * outputLevel, maxOutput)));
+
+	if (activeToggle->IsChecked() != GetInstance<AGenerator>()->GetIsActive()) {
+
+		ECheckBoxState state = GetInstance<AGenerator>()->GetIsActive() ? ECheckBoxState::Checked : ECheckBoxState::Unchecked;
+		activeToggle->SetCheckedState(state);
+
+	}
 
 }
 
@@ -55,5 +64,10 @@ void UCoalBoilerUI::OnOutputLevelChanged(float value) {
 
 	float maxOutput = GetInstance<AGenerator>()->GetMaxOutput();
 	outputText->SetText(FText::FromString(FString::Printf(TEXT("%3.0f / %3.0fkW"), maxOutput * value, maxOutput)));
+
+}
+void UCoalBoilerUI::OnActiveToggled(bool active) {
+
+	GetInstance<AGenerator>()->SetIsActive(active);
 
 }
