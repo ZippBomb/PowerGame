@@ -11,9 +11,9 @@ struct FNetworkSaveData {
 	GENERATED_BODY()
 
 	UPROPERTY()
-	float baseFrequency = 0.0f;
+	float nominalFrequency = 0.0f;
 	UPROPERTY()
-	float baseVoltage = 0.0f;
+	float nominalVoltage = 0.0f;
 	UPROPERTY()
 	float responseStrength = 1.0f;
 

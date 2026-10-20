@@ -39,7 +39,7 @@ public:
 	inline float GetInertia() const { return inertia; }
 
 	UFUNCTION(BlueprintCallable)
-	inline bool GetIsActive() const { return active; }
+	virtual inline bool GetIsActive() const { return active; }
 	UFUNCTION(BlueprintCallable)
 	inline float GetOutputLevel() const { return outputLevel; }
 

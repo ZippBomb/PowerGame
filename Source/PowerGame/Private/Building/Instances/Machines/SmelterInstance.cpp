@@ -1,5 +1,7 @@
 #include "Building/Instances/Machines/SmelterInstance.h"
 
+#include "Power/PowerNetwork.h"
+
 #include "UI/Buildings/Machines/SmelterUI.h"
 
 #include "Inventory/RecipeData.h"
@@ -16,7 +18,7 @@ void ASmelterInstance::Tick(float deltaTime) {
 
 	if (!smelting) {
 
-		if (recipe != nullptr && inputSlot.item == recipe->input.item && inputSlot.quantity >= recipe->input.amount)
+		if (CanStartSmelting())
 			StartSmelting();
 		else
 			return;
@@ -25,7 +27,9 @@ void ASmelterInstance::Tick(float deltaTime) {
 
 	PW_ASSERT(recipe != nullptr, LogMachines, TEXT("Smelter is burning with no recipe set."));
 
-	if (smeltTimer <= 0.0f) {
+	if (m_powerNetwork == nullptr || m_powerNetwork->IsDead())
+		StopSmelting();
+	else if (smeltTimer <= 0.0f) {
 
 		// Produce the output
 
@@ -62,7 +66,7 @@ void ASmelterInstance::OnInputAdded(UItemData* item, uint32 quantity) {
 	inputSlot.item = item;
 	inputSlot.quantity += quantity;
 
-	if (recipe != nullptr && item == recipe->input.item && inputSlot.quantity >= recipe->input.amount)
+	if (CanStartSmelting())
 		StartSmelting();
 
 }
@@ -99,16 +103,26 @@ void ASmelterInstance::StartSmelting() {
 	if (smelting) return;
 
 	smelting = true;
+	demand = powerDemand;
+
 	ConsumeInput();
 
 }
 void ASmelterInstance::StopSmelting() {
 
 	smelting = false;
+	demand = 0.0f;
+
 	smeltTimer = 0.0f;
 
 	if (inputSlot.quantity == 0)
 		inputSlot.item = nullptr;
+
+}
+bool ASmelterInstance::CanStartSmelting() const {
+
+	if (GetNetwork() == nullptr) return false;
+	return !GetNetwork()->IsDead() && recipe != nullptr && inputSlot.item == recipe->input.item && inputSlot.quantity >= recipe->input.amount;
 
 }
 

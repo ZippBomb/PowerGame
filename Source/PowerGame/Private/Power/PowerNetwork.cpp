@@ -107,8 +107,8 @@ void APowerNetwork::DisconnectBuilding(ABuildInstance* building) {
 
 void APowerNetwork::SerializeSaveData(FNetworkSaveData* out) {
 
-	out->baseFrequency = nominalFrequency;
-	out->baseVoltage = nominalVoltage;
+	out->nominalFrequency = nominalFrequency;
+	out->nominalVoltage = nominalVoltage;
 	out->responseStrength = responseStrength;
 
 	out->dead = m_dead;
@@ -144,8 +144,8 @@ void APowerNetwork::SerializeSaveData(FNetworkSaveData* out) {
 }
 void APowerNetwork::DeserializeSaveData(const FNetworkSaveData& data, TMap<FGuid, TObjectPtr<ABuildInstance>>& buildingsMap) {
 
-	nominalFrequency = data.baseFrequency;
-	nominalVoltage = data.baseVoltage;
+	nominalFrequency = data.nominalFrequency;
+	nominalVoltage = data.nominalVoltage;
 	responseStrength = data.responseStrength;
 
 	m_dead = data.dead;

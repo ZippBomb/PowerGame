@@ -25,6 +25,8 @@ public:
 
 	virtual void Interact(AMainPlayerCharacter* character) override;
 
+	virtual bool GetIsActive() const override { return active && burning; }
+
 protected:
 	UPROPERTY(VisibleAnywhere)
 	bool burning = false;

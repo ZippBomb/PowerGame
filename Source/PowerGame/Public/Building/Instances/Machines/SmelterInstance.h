@@ -40,8 +40,10 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	FItemSlot outputSlot;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Properties")
 	float smeltingSpeed = 1.0f;
+	UPROPERTY(EditAnywhere, Category = "Properties")
+	float powerDemand = 50.0f;
 
 	void OnInputAdded(UItemData* item, uint32 quantity);
 	void OnInputRemoved(UItemData* item, uint32 quantity);
@@ -56,6 +58,7 @@ private:
 
 	void StartSmelting();
 	void StopSmelting();
+	bool CanStartSmelting() const;
 
 	float CalculateProgress();
 
