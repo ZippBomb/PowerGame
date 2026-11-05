@@ -2,6 +2,8 @@
 
 #include "Power/PowerNetwork.h"
 
+#include "Logistics/Conveyor.h"
+
 #include "UI/Buildings/Machines/SmelterUI.h"
 
 #include "Inventory/RecipeData.h"
@@ -15,6 +17,9 @@ ASmelterInstance::ASmelterInstance() {
 void ASmelterInstance::Tick(float deltaTime) {
 
 	Super::Tick(deltaTime);
+
+	if (outputSlot.quantity != 0)
+		AttemptOutput();
 
 	if (!smelting) {
 
@@ -95,6 +100,15 @@ void ASmelterInstance::ConsumeInput() {
 		inputSlot.item = nullptr;
 
 	smeltTimer = recipe->recipeLength / smeltingSpeed;
+
+}
+
+void ASmelterInstance::AttemptOutput() {
+
+	if (outputConveyor == nullptr || !outputConveyor->CanReceiveItem(outputSlot.item)) return;
+
+	outputConveyor->InsertItem(outputSlot.item);
+	OnOutputRemoved(outputSlot.item);
 
 }
 

@@ -4,6 +4,8 @@
 #include "Engine/DataAsset.h"
 #include "ItemData.generated.h"
 
+class UStaticMesh;
+
 UCLASS()
 class POWERGAME_API UItemData : public UPrimaryDataAsset {
 
@@ -17,5 +19,8 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	uint32 stackSize = 100;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TObjectPtr<UStaticMesh> conveyorMesh = nullptr;
 
 };
