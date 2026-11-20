@@ -17,7 +17,7 @@ public:
 
 	virtual void Update(const FVector& hitLocation, ABuildInstance* hitBuildInstance) override;
 
-	virtual void Confirm(const FVector& location, ABuildInstance* targetBuildInstance) override;
+	virtual ABuildInstance* Confirm(const FVector& location, ABuildInstance* targetBuildInstance) override;
 
 private:
 

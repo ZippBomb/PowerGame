@@ -41,7 +41,7 @@ void ABuildGhost::Update(const FVector& hitLocation, ABuildInstance* hitBuildIns
 
 }
 
-void ABuildGhost::Confirm(const FVector& location, ABuildInstance* targetBuildInstance) {
+ABuildInstance* ABuildGhost::Confirm(const FVector& location, ABuildInstance* targetBuildInstance) {
 
 	PW_ASSERT(m_state == EBuildGhostState::Preview, LogBuilding, TEXT("Invalid Build Ghost placement state (must be EBuildGhostPlacementState::Preview)."));
 	PW_ASSERT(m_build->buildInstanceClass != nullptr, LogBuilding, TEXT("Can't confirm build with invalid Build Instance class. Build: '%s'"), *GetNameSafe(m_build));
@@ -50,6 +50,8 @@ void ABuildGhost::Confirm(const FVector& location, ABuildInstance* targetBuildIn
 	PW_ASSERT(buildInstance != nullptr, LogBuilding, TEXT("Could not spawn actor of type ABuildInstance."));
 
 	buildInstance->SetBuild(m_build);
+
+	return buildInstance;
 
 }
 

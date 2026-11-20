@@ -31,24 +31,24 @@ public:
 	virtual void Interact(AMainPlayerCharacter* character) override;
 
 	virtual void ReceiveItem(UItemData* item) override { OnInputAdded(item); }
-	virtual bool CanReceiveItem(UItemData* item) override { return inputSlot.item == nullptr || inputSlot.item == item; }
+	virtual bool CanReceiveItem(UItemData* item) override { return slots[inputSlot].item == nullptr || slots[inputSlot].item == item; }
+
+	virtual TArray<FMachineItemSlot>& GetMachineSlots() override { return slots; }
 
 	UFUNCTION(BlueprintCallable)
 	inline void SetRecipe(URecipeData* value) { recipe = value; }
 
 protected:
+	static constexpr uint32 inputSlot = 0;
+	static constexpr uint32 outputSlot = 1;
+
 	UPROPERTY(VisibleAnywhere)
 	bool smelting = false;
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<URecipeData> recipe = nullptr;
 
-	UPROPERTY(VisibleAnywhere)
-	FItemSlot inputSlot;
-	UPROPERTY(VisibleAnywhere)
-	FItemSlot outputSlot;
-
 	UPROPERTY(EditAnywhere)
-	TObjectPtr<AConveyor> outputConveyor = nullptr;
+	TArray<FMachineItemSlot> slots;
 
 	UPROPERTY(EditAnywhere, Category = "Properties")
 	float smeltingSpeed = 1.0f;

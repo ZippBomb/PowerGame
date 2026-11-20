@@ -3,6 +3,8 @@
 #include <CoreMinimal.h>
 #include <UObject/Interface.h>
 
+#include "Inventory/MachineItemSlot.h"
+
 #include "ItemReceiver.generated.h"
 
 class UItemData;
@@ -21,5 +23,7 @@ class POWERGAME_API IItemReceiver {
 public:
 	virtual bool CanReceiveItem(UItemData* item) = 0;
 	virtual void ReceiveItem(UItemData* item) = 0;
+
+	virtual TArray<FMachineItemSlot>& GetMachineSlots() = 0;
 
 };

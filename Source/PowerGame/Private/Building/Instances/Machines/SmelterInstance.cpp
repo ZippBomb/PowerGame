@@ -18,7 +18,7 @@ void ASmelterInstance::Tick(float deltaTime) {
 
 	Super::Tick(deltaTime);
 
-	if (outputSlot.quantity != 0)
+	if (slots[outputSlot].quantity != 0)
 		AttemptOutput();
 
 	if (!smelting) {
@@ -38,12 +38,12 @@ void ASmelterInstance::Tick(float deltaTime) {
 
 		// Produce the output
 
-		outputSlot.item = recipe->output.item;
-		outputSlot.quantity += recipe->output.amount;
+		slots[outputSlot].item = recipe->output.item;
+		slots[outputSlot].quantity += recipe->output.amount;
 
 		// Consume the input (if possible)
 
-		if (inputSlot.quantity >= recipe->input.amount)
+		if (slots[inputSlot].quantity >= recipe->input.amount)
 			ConsumeInput();
 		else
 			StopSmelting();
@@ -52,7 +52,7 @@ void ASmelterInstance::Tick(float deltaTime) {
 		smeltTimer -= deltaTime;
 
 	if (uiOpen)
-		GetUI<USmelterUI>()->UpdateUI(inputSlot, outputSlot, recipe, CalculateProgress());
+		GetUI<USmelterUI>()->UpdateUI(slots[inputSlot], slots[outputSlot], recipe, CalculateProgress());
 
 }
 
@@ -60,16 +60,16 @@ void ASmelterInstance::Interact(AMainPlayerCharacter* character) {
 
 	Super::Interact(character);
 
-	GetUI<USmelterUI>()->UpdateUI(inputSlot, outputSlot, recipe, CalculateProgress());
+	GetUI<USmelterUI>()->UpdateUI(slots[inputSlot], slots[outputSlot], recipe, CalculateProgress());
 
 }
 
 void ASmelterInstance::OnInputAdded(UItemData* item, uint32 quantity) {
 
-	if (inputSlot.item != nullptr && inputSlot.item != item) return;
+	if (slots[inputSlot].item != nullptr && slots[inputSlot].item != item) return;
 
-	inputSlot.item = item;
-	inputSlot.quantity += quantity;
+	slots[inputSlot].item = item;
+	slots[inputSlot].quantity += quantity;
 
 	if (CanStartSmelting())
 		StartSmelting();
@@ -77,27 +77,27 @@ void ASmelterInstance::OnInputAdded(UItemData* item, uint32 quantity) {
 }
 void ASmelterInstance::OnInputRemoved(UItemData* item, uint32 quantity) {
 
-	PW_ASSERT(inputSlot.item == item, LogMachines, TEXT("Item mismatch in input slot."));
+	PW_ASSERT(slots[inputSlot].item == item, LogMachines, TEXT("Item mismatch in input slot."));
 
-	inputSlot.quantity -= quantity;
+	slots[inputSlot].quantity -= quantity;
 
 }
 
 void ASmelterInstance::OnOutputRemoved(UItemData* item, uint32 quantity) {
 
-	PW_ASSERT(outputSlot.item == item, LogMachines, TEXT("Item mismatch in output slot."));
+	PW_ASSERT(slots[outputSlot].item == item, LogMachines, TEXT("Item mismatch in output slot."));
 
-	outputSlot.quantity -= quantity;
-	if (outputSlot.quantity == 0)
-		outputSlot.item = nullptr;
+	slots[outputSlot].quantity -= quantity;
+	if (slots[outputSlot].quantity == 0)
+		slots[outputSlot].item = nullptr;
 
 }
 
 void ASmelterInstance::ConsumeInput() {
 
-	inputSlot.quantity -= recipe->input.amount;
-	if (inputSlot.quantity == 0)
-		inputSlot.item = nullptr;
+	slots[inputSlot].quantity -= recipe->input.amount;
+	if (slots[inputSlot].quantity == 0)
+		slots[inputSlot].item = nullptr;
 
 	smeltTimer = recipe->recipeLength / smeltingSpeed;
 
@@ -105,10 +105,11 @@ void ASmelterInstance::ConsumeInput() {
 
 void ASmelterInstance::AttemptOutput() {
 
-	if (outputConveyor == nullptr || !outputConveyor->CanReceiveItem(outputSlot.item)) return;
+	AConveyor* conveyor = slots[outputSlot].attachedConveyor;
+	if (conveyor == nullptr || !conveyor->CanReceiveItem(slots[outputSlot].item)) return;
 
-	outputConveyor->InsertItem(outputSlot.item);
-	OnOutputRemoved(outputSlot.item);
+	conveyor->InsertItem(slots[outputSlot].item);
+	OnOutputRemoved(slots[outputSlot].item);
 
 }
 
@@ -129,14 +130,14 @@ void ASmelterInstance::StopSmelting() {
 
 	smeltTimer = 0.0f;
 
-	if (inputSlot.quantity == 0)
-		inputSlot.item = nullptr;
+	if (slots[inputSlot].quantity == 0)
+		slots[inputSlot].item = nullptr;
 
 }
 bool ASmelterInstance::CanStartSmelting() const {
 
 	if (GetNetwork() == nullptr) return false;
-	return !GetNetwork()->IsDead() && recipe != nullptr && inputSlot.item == recipe->input.item && inputSlot.quantity >= recipe->input.amount;
+	return !GetNetwork()->IsDead() && recipe != nullptr && slots[inputSlot].item == recipe->input.item && slots[inputSlot].quantity >= recipe->input.amount;
 
 }
 

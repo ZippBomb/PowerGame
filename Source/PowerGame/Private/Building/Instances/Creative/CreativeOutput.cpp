@@ -12,9 +12,9 @@ void ACreativeOutput::Tick(float deltaTime) {
 
 	Super::Tick(deltaTime);
 
-	if (conveyor == nullptr || item == nullptr) return;
+	AConveyor* conveyor = slots[0].attachedConveyor;
+	if (item == nullptr || conveyor == nullptr || !conveyor->CanReceiveItem(item)) return;
 
-	if (!conveyor->CanReceiveItem(item)) return;
 	conveyor->ReceiveItem(item);
 
 }

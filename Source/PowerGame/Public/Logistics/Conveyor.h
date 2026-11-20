@@ -12,6 +12,8 @@
 
 #include "Conveyor.generated.h"
 
+class ABuildGhostConveyor;
+
 class UItemData;
 class IItemReceiver;
 
@@ -40,6 +42,8 @@ UCLASS()
 class POWERGAME_API AConveyor : public AMeshBuildInstance, public IItemReceiver {
 
 	GENERATED_BODY()
+
+	friend ABuildGhostConveyor;
 	
 public:
 	AConveyor();
@@ -50,6 +54,8 @@ public:
 
 	virtual bool CanReceiveItem(UItemData* item) override { return insertTimer <= 0.0f; }
 	virtual void ReceiveItem(UItemData* item) override { InsertItem(item); }
+
+	virtual TArray<FMachineItemSlot>& GetMachineSlots() override { return slots; }
 
 protected:
 	UPROPERTY(EditAnywhere, Category = "Conveyor")
@@ -70,6 +76,9 @@ protected:
 private:
 	UPROPERTY(VisibleAnywhere, Category = "Conveyor | Data")
 	TArray<FConveyorItem> items;
+
+	UPROPERTY(EditAnywhere, Category = "Conveyor")
+	TArray<FMachineItemSlot> slots;
 
 	UPROPERTY(VisibleAnywhere)
 	TMap<UItemData*, TObjectPtr<UInstancedStaticMeshComponent>> itemISMMap;

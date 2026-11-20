@@ -11,7 +11,7 @@ class UItemData;
 class UInventoryPanel;
 class UInventorySlot;
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct POWERGAME_API FItemSlot {
 
 	GENERATED_BODY()

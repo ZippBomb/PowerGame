@@ -23,9 +23,9 @@ void ABuildGhostWire::Update(const FVector& hitLocation, ABuildInstance* hitBuil
 
 }
 
-void ABuildGhostWire::Confirm(const FVector& location, ABuildInstance* targetBuildInstance) {
+ABuildInstance* ABuildGhostWire::Confirm(const FVector& location, ABuildInstance* targetBuildInstance) {
 
-	if (targetBuildInstance == nullptr) return;
+	if (targetBuildInstance == nullptr) return nullptr;
 
 	UBuild* build = targetBuildInstance->GetBuild();
 
@@ -38,7 +38,7 @@ void ABuildGhostWire::Confirm(const FVector& location, ABuildInstance* targetBui
 
 		m_state = EBuildGhostState::StartSelected;
 
-		break;
+		return nullptr;
 
 	}
 	case EBuildGhostState::StartSelected: {
@@ -64,12 +64,13 @@ void ABuildGhostWire::Confirm(const FVector& location, ABuildInstance* targetBui
 		// Reset back to preview for the next wire
 
 		m_state = EBuildGhostState::Preview;
-
-		break;
+		return splineInstance;
 
 	}
 	default: break;
 
 	}
+
+	return nullptr;
 
 }
