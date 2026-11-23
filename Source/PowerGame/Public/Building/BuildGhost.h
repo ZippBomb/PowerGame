@@ -52,7 +52,7 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UBuild> m_build = nullptr;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY()
 	TObjectPtr<UStaticMeshComponent> m_mesh = nullptr;
 
 	virtual void BeginPlay() override;

@@ -88,6 +88,11 @@ void UConstructionModeManager::HandleBuildTool() {
 	FHitResult hit = FHitResult(EForceInit::ForceInit);
 	VisibilityTrace(hit);
 
+	if (hit.GetActor() != nullptr)
+		GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::White, FString::Printf(TEXT("Hit: '%s'"), *hit.GetActor()->GetName()));
+	else
+		GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::White, TEXT("Hit; nothing"));
+
 	if (!hit.bBlockingHit) {
 
 		m_buildGhost->SetActorHiddenInGame(true);

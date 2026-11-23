@@ -41,7 +41,7 @@ public:
 	virtual void SerializeSaveData(FInstancedStruct* out) override;
 	virtual void DeserializeSaveData(const FInstancedStruct& data) override;
 
-private:
+protected:
 	UPROPERTY(EditAnywhere)
 	float m_sagAmount = 0.17f;
 

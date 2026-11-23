@@ -1,7 +1,7 @@
 #pragma once
 
 #include <CoreMinimal.h>
-#include "Building/Instances/MeshBuildInstance.h"
+#include "Building/Instances/SplineBuildInstance.h"
 
 #include "Core/Core.h"
 
@@ -30,7 +30,7 @@ struct FConveyorItem {
 	TObjectPtr<UItemData> item = nullptr;
 
 	UPROPERTY()
-	float progress = 0.0f;
+	float distance = 0.0f;
 
 	UPROPERTY()
 	TObjectPtr<UInstancedStaticMeshComponent> ism = nullptr;
@@ -39,7 +39,7 @@ struct FConveyorItem {
 };
 
 UCLASS()
-class POWERGAME_API AConveyor : public AMeshBuildInstance, public IItemReceiver {
+class POWERGAME_API AConveyor : public ASplineBuildInstance, public IItemReceiver {
 
 	GENERATED_BODY()
 
@@ -52,6 +52,8 @@ public:
 
 	void InsertItem(UItemData* item);
 
+	void SetSpline(USplineComponent* spline);
+
 	virtual bool CanReceiveItem(UItemData* item) override { return insertTimer <= 0.0f; }
 	virtual void ReceiveItem(UItemData* item) override { InsertItem(item); }
 
@@ -62,13 +64,8 @@ protected:
 	float speed = 1.0f;
 	UPROPERTY(EditAnywhere, Category = "Conveyor")
 	float insertSpeed = 1.0f;
-
 	UPROPERTY(EditAnywhere, Category = "Conveyor")
-	FVector start;
-	UPROPERTY(EditAnywhere, Category = "Conveyor")
-	FVector end;
-	UPROPERTY(EditAnywhere, Category = "Conveyor")
-	float length = 100.0f;
+	float conveyorHeight = 65.0f;
 
 	UPROPERTY(EditAnywhere, Category = "Conveyor")
 	TScriptInterface<IItemReceiver> connectedReceiver = nullptr;
@@ -84,6 +81,9 @@ private:
 	TMap<UItemData*, TObjectPtr<UInstancedStaticMeshComponent>> itemISMMap;
 	UPROPERTY(VisibleAnywhere)
 	TArray<TObjectPtr<UInstancedStaticMeshComponent>> ismPool;
+
+	UPROPERTY(VisibleAnywhere)
+	float m_length = 100.0f;
 
 	UPROPERTY()
 	float insertTimer = 0.0f;

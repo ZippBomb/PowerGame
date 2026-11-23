@@ -4,6 +4,8 @@
 #include "Inventory/ItemData.h"
 
 #include <Components/InstancedStaticMeshComponent.h>
+#include <Components/SplineComponent.h>
+#include <Components/SplineMeshComponent.h>
 
 DEFINE_LOG_CATEGORY(LogLogistics);
 
@@ -26,9 +28,9 @@ void AConveyor::Tick(float deltaTime) {
 	for (int32 i = 0; i < items.Num(); i++) {
 
 		FConveyorItem& item = items[i];
-		item.progress += (speed * deltaTime) / length;
+		item.distance += (speed * deltaTime);
 
-		if (item.progress >= 1.0f) {
+		if (item.distance >= m_length) {
 
 			arrivedCounter++;
 			if (connectedReceiver != nullptr && connectedReceiver->CanReceiveItem(item.item))
@@ -51,7 +53,7 @@ void AConveyor::Tick(float deltaTime) {
 		// NOTE: UpdateInstanceTransformById seems to have a mistake where it only takes in 2 arguments and passes bTeleport as bMarkRenderStateDirty
 		//		 when calling UpdateInstanceTransform
 
-		transform.SetLocation(start + (end - start) * item.progress);
+		transform.SetLocation(m_spline->GetLocationAtDistanceAlongSpline(item.distance, ESplineCoordinateSpace::Local));
 		item.ism->UpdateInstanceTransformById(item.ismID, transform, false, true);
 
 	}
@@ -66,7 +68,7 @@ void AConveyor::InsertItem(UItemData* item) {
 	FConveyorItem& newItem = items.AddDefaulted_GetRef();
 
 	newItem.item = item;
-	newItem.progress = 0.0f;
+	newItem.distance = 0.0f;
 
 	if (itemISMMap.Contains(item))
 		newItem.ism = itemISMMap[item];
@@ -91,6 +93,7 @@ void AConveyor::InsertItem(UItemData* item) {
 
 		newItem.ism->SetupAttachment(RootComponent);
 		newItem.ism->RegisterComponent();
+		newItem.ism->SetRelativeLocation(FVector(0.0f, 0.0f, conveyorHeight));
 
 		newItem.ism->SetGenerateOverlapEvents(false);
 		newItem.ism->SetCollisionEnabled(ECollisionEnabled::NoCollision);
@@ -102,10 +105,31 @@ void AConveyor::InsertItem(UItemData* item) {
 	}
 
 	FTransform transform;
-	transform.SetLocation(start);
+	transform.SetLocation(m_spline->GetLocationAtDistanceAlongSpline(0.0f, ESplineCoordinateSpace::Local));
 
 	newItem.ismID = newItem.ism->AddInstanceById(transform);
 
 	insertTimer = 1 / insertSpeed;
+
+}
+
+void AConveyor::SetSpline(USplineComponent* spline) {
+
+	FVector startPos, startTangent;
+	FVector endPos, endTangent;
+
+	spline->GetLocationAndTangentAtSplinePoint(0, startPos, startTangent, ESplineCoordinateSpace::Local);
+	spline->GetLocationAndTangentAtSplinePoint(1, endPos, endTangent, ESplineCoordinateSpace::Local);
+
+	m_spline->SetLocationAtSplinePoint(0, startPos, ESplineCoordinateSpace::Local);
+	m_spline->SetTangentAtSplinePoint(0, startTangent, ESplineCoordinateSpace::Local);
+
+	m_spline->SetLocationAtSplinePoint(1, endPos, ESplineCoordinateSpace::Local);
+	m_spline->SetTangentAtSplinePoint(1, endTangent, ESplineCoordinateSpace::Local);
+
+	m_splineMesh->SetStartAndEnd(startPos, startTangent, endPos, endTangent);
+	m_length = m_spline->GetSplineLength();
+
+	slots[1].transform.SetLocation(slots[0].transform.GetLocation() + endPos);
 
 }

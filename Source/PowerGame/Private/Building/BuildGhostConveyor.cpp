@@ -6,16 +6,167 @@
 #include "Logistics/ItemReceiver.h"
 #include "Logistics/Conveyor.h"
 
+#include <Components/SplineComponent.h>
+#include <Components/SplineMeshComponent.h>
+
+ABuildGhostConveyor::ABuildGhostConveyor() {
+
+	m_spline = CreateDefaultSubobject<USplineComponent>(TEXT("Spline"));
+	m_spline->SetMobility(EComponentMobility::Movable);
+	SetRootComponent(m_spline);
+
+	m_splineMesh = CreateDefaultSubobject<USplineMeshComponent>(TEXT("Spline mesh"));
+	m_splineMesh->SetMobility(EComponentMobility::Movable);
+	m_splineMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	m_splineMesh->SetupAttachment(m_spline);
+
+	m_mesh = m_splineMesh;
+
+}
+
 void ABuildGhostConveyor::Update(const FVector& hitLocation, ABuildInstance* hitBuildInstance) {
 
-	if (hitBuildInstance == nullptr || !hitBuildInstance->Implements<UItemReceiver>()) {
+	// Get the location and rotation
+	// In the case we hit close enough to a machine slot, it will snap to it, otherwie it will just be
+	// the hit location and actor rotation
 
-		Super::Update(hitLocation, hitBuildInstance);
-		return;
+	// NOTE: The addition is just a temporary thing before conveyor stands and shit is implemented
+	FVector location = hitLocation + FVector(0.0f, 0.0f, 70.0f);
+	FQuat rotation = GetActorRotation().Quaternion();
+
+	machineSlot = GetMachineSlot(hitLocation, hitBuildInstance);
+	if (machineSlot != nullptr) {
+
+		FTransform connectionPoint = machineSlot->transform * hitBuildInstance->GetActorTransform();
+
+		location = connectionPoint.GetLocation();
+		rotation = connectionPoint.GetRotation();
 
 	}
 
-	IItemReceiver* receiver = Cast<IItemReceiver>(hitBuildInstance);
+	switch (m_state) {
+
+	case EBuildGhostState::Preview: {
+
+		SetActorLocation(location);
+		SetActorRotation(rotation);
+
+		break;
+
+	}
+	case EBuildGhostState::StartSelected: {
+
+		m_spline->SetLocationAtSplinePoint(1, location, ESplineCoordinateSpace::World);
+		if (machineSlot != nullptr) {
+
+			FTransform transform = machineSlot->transform * hitBuildInstance->GetActorTransform();
+			FVector tangent = transform.GetUnitAxis(EAxis::X) * tangentLength;
+			m_spline->SetTangentsAtSplinePoint(1, tangent, tangent, ESplineCoordinateSpace::World);
+
+		}
+
+		FVector startPos, startTangent;
+		FVector endPos, endTangent;
+
+		m_spline->GetLocationAndTangentAtSplinePoint(0, startPos, startTangent, ESplineCoordinateSpace::Local);
+		m_spline->GetLocationAndTangentAtSplinePoint(1, endPos, endTangent, ESplineCoordinateSpace::Local);
+
+		m_splineMesh->SetStartAndEnd(startPos, startTangent, endPos, endTangent);
+
+		break;
+
+	}
+
+	}
+
+	SetActorHiddenInGame(false);
+
+}
+
+ABuildInstance* ABuildGhostConveyor::Confirm(const FVector& location, ABuildInstance* targetBuildInstance) {
+
+	switch (m_state) {
+
+	case EBuildGhostState::Preview: {
+
+		m_startBuildInstance = targetBuildInstance;
+		m_startSlot = machineSlot;
+
+		m_spline->SetLocationAtSplinePoint(0, GetActorLocation(), ESplineCoordinateSpace::World);
+		m_spline->SetLocationAtSplinePoint(1, GetActorLocation(), ESplineCoordinateSpace::World);
+
+		if (machineSlot != nullptr) {
+
+			FTransform transform = machineSlot->transform * targetBuildInstance->GetActorTransform();
+			FVector tangent = transform.GetUnitAxis(EAxis::X) * tangentLength;
+			m_spline->SetTangentsAtSplinePoint(0, tangent, tangent, ESplineCoordinateSpace::World);
+
+		}
+
+		m_state = EBuildGhostState::StartSelected;
+
+		return nullptr;
+
+	}
+	case EBuildGhostState::StartSelected: {
+
+		// Spawn the conveyor belt
+
+		AConveyor* instance = Cast<AConveyor>(Super::Confirm(GetActorLocation(), targetBuildInstance));
+		PW_ASSERT(instance != nullptr, LogBuilding, TEXT("Could not cast spawned actor of type ABuildInstance to AConveyor."));
+
+		// Setup the slots and conveyor belt
+
+		if (m_startSlot != nullptr)
+			m_startSlot->attachedConveyor = instance;
+		if (machineSlot != nullptr) {
+
+			machineSlot->attachedConveyor = instance;
+
+			if (machineSlot->input)
+				instance->connectedReceiver = targetBuildInstance;
+
+		}
+
+		instance->SetSpline(m_spline);
+
+		// Reset the build ghost
+
+		FVector pos = m_spline->GetLocationAtSplinePoint(1, ESplineCoordinateSpace::World);
+		SetActorLocation(pos);
+
+		m_startBuildInstance = instance;
+		m_startSlot = &instance->slots[1]; // TODO: This needs to be defined better for when the conveyor belt is reversed
+
+		ResetSpline();
+
+		FTransform transform = m_startSlot->transform * instance->GetActorTransform();
+		FVector tangent = transform.GetUnitAxis(EAxis::X) * tangentLength;
+		m_spline->SetTangentsAtSplinePoint(0, tangent, tangent, ESplineCoordinateSpace::World);
+		m_spline->SetTangentsAtSplinePoint(1, tangent, tangent, ESplineCoordinateSpace::World);
+
+		return instance;
+
+	}
+	default: return nullptr;
+
+	}
+
+}
+
+void ABuildGhostConveyor::Reset() {
+
+	Super::Reset();
+
+	ResetSpline();
+
+}
+
+FMachineItemSlot* ABuildGhostConveyor::GetMachineSlot(const FVector& location, ABuildInstance* buildInstance) const {
+
+	if (buildInstance == nullptr || !buildInstance->Implements<UItemReceiver>()) return nullptr;
+
+	IItemReceiver* receiver = Cast<IItemReceiver>(buildInstance);
 	PW_ASSERT(receiver != nullptr, LogLogistics, TEXT("Build instance that implements IItemReceiver failed to cast."));
 
 	TArray<FMachineItemSlot>& slots = receiver->GetMachineSlots();
@@ -26,8 +177,8 @@ void ABuildGhostConveyor::Update(const FVector& hitLocation, ABuildInstance* hit
 
 		if (slot.attachedConveyor != nullptr) continue;
 
-		const FVector worldLocation = hitBuildInstance->GetActorTransform().TransformPosition(slot.transform.GetLocation());
-		const float distance = FVector::DistSquared(hitLocation, worldLocation);
+		const FVector worldLocation = buildInstance->GetActorTransform().TransformPosition(slot.transform.GetLocation());
+		const float distance = FVector::DistSquared(location, worldLocation);
 
 		if (distance >= bestDistance) continue;
 
@@ -38,51 +189,13 @@ void ABuildGhostConveyor::Update(const FVector& hitLocation, ABuildInstance* hit
 	if (bestDistance > maxSnapDistance * maxSnapDistance)
 		bestSlot = nullptr;
 
-	machineSlot = bestSlot;
-
-	if (machineSlot == nullptr) {
-
-		Super::Update(hitLocation, hitBuildInstance);
-		return;
-
-	}
-
-	FTransform connectionPointTransform = hitBuildInstance->GetActorTransform() * machineSlot->transform;
-
-	SetActorLocation(connectionPointTransform.GetLocation());
-	SetActorRotation(connectionPointTransform.GetRotation());
-
-	SetActorHiddenInGame(false);
+	return bestSlot;
 
 }
 
-ABuildInstance* ABuildGhostConveyor::Confirm(const FVector& location, ABuildInstance* targetBuildInstance) {
+void ABuildGhostConveyor::ResetSpline() {
 
-	if (machineSlot == nullptr)
-		return Super::Confirm(GetActorLocation(), targetBuildInstance);
-
-	PW_ASSERT(targetBuildInstance != nullptr, LogBuilding, TEXT("Target build instance is nullptr."));
-
-	AConveyor* instance = Cast<AConveyor>(Super::Confirm(GetActorLocation(), targetBuildInstance));
-	PW_ASSERT(instance != nullptr, LogBuilding, TEXT("Could not cast spawned actor of type ABuildInstance to AConveyor."));
-
-	machineSlot->attachedConveyor = instance;
-
-	if (machineSlot->input) {
-
-		PW_ASSERT(targetBuildInstance->Implements<UItemReceiver>(), LogBuilding, TEXT("Target build instance does not implement IItemReceiver....... how"));
-		TScriptInterface<IItemReceiver> receiver = targetBuildInstance;
-		PW_ASSERT(receiver != nullptr, LogLogistics, TEXT("Build instance that implements IItemReceiver failed to cast."));
-
-		instance->connectedReceiver = receiver;
-
-	} else if (AConveyor* target = Cast<AConveyor>(targetBuildInstance)) {
-
-		target->connectedReceiver = instance;
-
-	}
-
-	return instance;
-
+	m_spline->ResetToDefault();
+	m_splineMesh->SetStartAndEnd(FVector::ZeroVector, FVector::ZeroVector, FVector(100.0f, 0.0f, 0.0f), FVector(100.0f, 0.0f, 0.0f));
 
 }

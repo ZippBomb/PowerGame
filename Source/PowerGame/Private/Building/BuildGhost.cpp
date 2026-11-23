@@ -9,10 +9,6 @@ ABuildGhost::ABuildGhost() {
 
 	PrimaryActorTick.bCanEverTick = false;
 
-	m_mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
-	m_mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	SetRootComponent(m_mesh);
-
 }
 
 void ABuildGhost::BeginPlay() {
@@ -43,7 +39,7 @@ void ABuildGhost::Update(const FVector& hitLocation, ABuildInstance* hitBuildIns
 
 ABuildInstance* ABuildGhost::Confirm(const FVector& location, ABuildInstance* targetBuildInstance) {
 
-	PW_ASSERT(m_state == EBuildGhostState::Preview, LogBuilding, TEXT("Invalid Build Ghost placement state (must be EBuildGhostPlacementState::Preview)."));
+	PW_ASSERT(m_state != EBuildGhostState::None, LogBuilding, TEXT("Invalid Build Ghost placement state."));
 	PW_ASSERT(m_build->buildInstanceClass != nullptr, LogBuilding, TEXT("Can't confirm build with invalid Build Instance class. Build: '%s'"), *GetNameSafe(m_build));
 
 	ABuildInstance* buildInstance = GetWorld()->SpawnActor<ABuildInstance>(m_build->buildInstanceClass, location, GetActorRotation());

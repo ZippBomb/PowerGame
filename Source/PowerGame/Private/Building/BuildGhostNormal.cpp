@@ -2,8 +2,13 @@
 #include "Building/ConstructionModeManager.h"
 
 #include <Components/BoxComponent.h>
+#include <Components/StaticMeshComponent.h>
 
 ABuildGhostNormal::ABuildGhostNormal() {
+
+	m_mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Mesh"));
+	m_mesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetRootComponent(m_mesh);
 
 	validityTrigger = CreateDefaultSubobject<UBoxComponent>(TEXT("Validity trigger"));
 	validityTrigger->SetupAttachment(m_mesh);
