@@ -36,6 +36,11 @@ void ABuildGhost::Update(const FVector& hitLocation, ABuildInstance* hitBuildIns
 	SetActorLocation(hitLocation);
 
 }
+void ABuildGhost::Rotate(float angle) {
+
+	AddActorWorldRotation(FRotator(0.0f, angle, 0.0f));
+
+}
 
 ABuildInstance* ABuildGhost::Confirm(const FVector& location, ABuildInstance* targetBuildInstance) {
 

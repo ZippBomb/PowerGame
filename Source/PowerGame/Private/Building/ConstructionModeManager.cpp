@@ -88,11 +88,6 @@ void UConstructionModeManager::HandleBuildTool() {
 	FHitResult hit = FHitResult(EForceInit::ForceInit);
 	VisibilityTrace(hit);
 
-	if (hit.GetActor() != nullptr)
-		GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::White, FString::Printf(TEXT("Hit: '%s'"), *hit.GetActor()->GetName()));
-	else
-		GEngine->AddOnScreenDebugMessage(-1, 0.1f, FColor::White, TEXT("Hit; nothing"));
-
 	if (!hit.bBlockingHit) {
 
 		m_buildGhost->SetActorHiddenInGame(true);
@@ -351,6 +346,6 @@ void UConstructionModeManager::RotateBuildGhost() {
 	if (m_buildGhost == nullptr || m_buildGhost->IsHidden()) return;
 	if (!m_selectedBuild->rotatable) return;
 
-	m_buildGhost->AddActorWorldRotation(FRotator(0.0f, rotationAngle, 0.0f));
+	m_buildGhost->Rotate(rotationAngle);
 
 }

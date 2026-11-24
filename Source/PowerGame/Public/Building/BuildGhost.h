@@ -31,6 +31,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void Update(const FVector& hitLocation, ABuildInstance* hitBuildInstance);
+	UFUNCTION(BlueprintCallable)
+	virtual void Rotate(float angle);
 
 	UFUNCTION(BlueprintCallable)
 	virtual ABuildInstance* Confirm(const FVector& location, ABuildInstance* targetBuildInstance);

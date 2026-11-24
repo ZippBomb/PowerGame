@@ -82,6 +82,25 @@ void ABuildGhostConveyor::Update(const FVector& hitLocation, ABuildInstance* hit
 	SetActorHiddenInGame(false);
 
 }
+void ABuildGhostConveyor::Rotate(float angle) {
+
+	switch (m_state) {
+
+	case EBuildGhostState::Preview: Super::Rotate(angle); break;
+	case EBuildGhostState::StartSelected: {
+
+		FVector tangent = m_spline->GetTangentAtSplinePoint(1, ESplineCoordinateSpace::World);
+		tangent = tangent.RotateAngleAxis(angle, FVector(0.0f, 0.0f, 1.0f));
+		m_spline->SetTangentAtSplinePoint(1, tangent, ESplineCoordinateSpace::World);
+
+		break;
+
+	}
+	default: break;
+
+	}
+
+}
 
 ABuildInstance* ABuildGhostConveyor::Confirm(const FVector& location, ABuildInstance* targetBuildInstance) {
 
@@ -117,8 +136,14 @@ ABuildInstance* ABuildGhostConveyor::Confirm(const FVector& location, ABuildInst
 
 		// Setup the slots and conveyor belt
 
-		if (m_startSlot != nullptr)
+		if (m_startSlot != nullptr) {
+
 			m_startSlot->attachedConveyor = instance;
+
+			if (m_startSlot->input)
+				instance->connectedReceiver = m_startBuildInstance;
+
+		}
 		if (machineSlot != nullptr) {
 
 			machineSlot->attachedConveyor = instance;

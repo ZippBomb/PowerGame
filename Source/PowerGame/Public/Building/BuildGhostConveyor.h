@@ -19,6 +19,7 @@ public:
 	ABuildGhostConveyor();
 
 	virtual void Update(const FVector& hitLocation, ABuildInstance* hitBuildInstance) override;
+	virtual void Rotate(float angle) override;
 
 	virtual ABuildInstance* Confirm(const FVector& location, ABuildInstance* targetBuildInstance) override;
 
